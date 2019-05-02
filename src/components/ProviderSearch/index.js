@@ -3,7 +3,11 @@ import './styles/index.css';
 
 class ProviderSearch extends Component {
   render() {
-    return <div>ProviderSearch</div>;
+    return (
+      <div className='heading'>
+        Example component using ProviderSearch from 1uphealth
+      </div>
+    );
   }
 }
 
