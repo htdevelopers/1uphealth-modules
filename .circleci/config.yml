@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/htdevelopers/1uphealth-provider-search
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    docker:
+      - image: circleci/node:10.4.1-browsers
+        command: /sbin/init
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: 'sudo npm install -g npm@latest'
+      - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+      - restore_cache:
+          keys:
+            - v1-dep-{{ checksum "package.json" }}
+      - run:
+          name: NPM Install
+          command: npm install
+      - save_cache:
+          key: v1-dep-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: npm run test
+          command: npm test -- -w 1
+      - store_test_results:
+          path: /tmp/circleci-test-results
+      - store_artifacts:
+          path: /tmp/circleci-artifacts
+      - store_artifacts:
+          path: /tmp/circleci-test-results
