@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "SET NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src/<ProviderSearch> --out-dir dist --copy-files",
+    "build": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src/components/ProviderSearch --out-dir dist --copy-files",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
