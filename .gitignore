@@ -1,24 +1,34 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# production
-/build
-/dist
-
-# misc
+.rpt2_cache
+dist
+main.js
+main.es.js
+main.mjs
+main.min.js
+index.mjs
+*.min.js
+*.es5.js
+.esm-cache
+package-lock.json
+env
+.nyc_output
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+.idea/*
+types.js
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+types.d.ts
+
+pids
+logs
+results
 
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+node_modules
+
+.vscode

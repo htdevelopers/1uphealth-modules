@@ -1,34 +1,18 @@
 {
-  "name": "1uphealth-provider-search",
-  "version": "0.3.0",
-  "private": false,
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "babel": {
-    "presets": [
-      "react",
-      "env",
-      "stage-2"
-    ]
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "3.14.1",
+    "eslint": "*",
+    "eslint-config-mourner": "*",
+    "rollup": "*",
+    "rollup-plugin-typescript": "*",
+    "typescript": "*"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src/components/ProviderSearch --out-dir dist --copy-files",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1"
+    "test": "lerna run test --use-workspaces"
   }
 }

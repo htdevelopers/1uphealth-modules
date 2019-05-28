@@ -1,0 +1,33 @@
+{
+  "name": "@htd-1uphealth/api",
+  "version": "0.0.3",
+  "description": "description...",
+  "main": "index",
+  "types": "index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "prepare": "tsc",
+    "pretest": "tsc",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "1uphealth",
+    "example"
+  ],
+  "authors": [
+    "Kacper Perzankowski <kacper.perzankowski@htdevelopers.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://1up.health/",
+  "devDependencies": {
+    "tslint": "*",
+    "typescript": "*"
+  },
+  "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
+}
