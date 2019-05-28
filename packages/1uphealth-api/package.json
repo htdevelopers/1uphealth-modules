@@ -1,6 +1,6 @@
 {
   "name": "@htd-1uphealth/api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "description...",
   "main": "index",
   "types": "index.d.ts",
