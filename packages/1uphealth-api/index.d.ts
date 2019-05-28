@@ -1,1 +1,1 @@
-export default function example(): string;
+export default function api(): string;
