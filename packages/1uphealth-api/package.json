@@ -14,7 +14,7 @@
   "scripts": {
     "prepare": "tsc",
     "pretest": "tsc",
-    "test": "node test.js"
+    "test": "echo 'not tests...'"
   },
   "keywords": [
     "1uphealth",
@@ -25,9 +25,11 @@
   ],
   "license": "MIT",
   "homepage": "https://1up.health/",
-  "devDependencies": {
-    "tslint": "*",
-    "typescript": "*"
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "dependencies": {
   },
   "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
 }

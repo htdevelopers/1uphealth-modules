@@ -4,13 +4,16 @@
   "workspaces": [
     "packages/*"
   ],
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
   "devDependencies": {
     "lerna": "3.14.1",
-    "eslint": "*",
-    "eslint-config-mourner": "*",
-    "rollup": "*",
-    "rollup-plugin-typescript": "*",
-    "typescript": "*"
+    "rollup": "^1.12.4",
+    "typescript": "^3.4.5",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint": "^5.16.0"
   },
   "scripts": {
     "test": "lerna run test --use-workspaces",
