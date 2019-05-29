@@ -13,5 +13,5 @@ jobs:
           name: Yarn Install
           command: yarn && yarn build
       - run:
-          name: yarn test
+          name: Yarn Test
           command: yarn test
