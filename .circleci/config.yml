@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/htdevelopers/1uphealth-modules
     parallelism: 1
-    shell: /bin/bash --login
+    # shell: /bin/bash --login
     docker:
       - image: circleci/node:12.3.1-browsers
         command: /sbin/init
