@@ -26,6 +26,7 @@
   },
   "exclude": [
     "packages/*/dist",
+    "packages/*/tests",
     "node_modules",
     "packages/*/node_modules"
   ]

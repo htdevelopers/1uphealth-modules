@@ -1,6 +1,12 @@
 const {defaults} = require('jest-config');
 
 module.exports = {
-  roots: [ '<rootDir>/tests' ],
-  moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts', 'tsx'],
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  moduleFileExtensions: [...defaults.moduleFileExtensions, 'test.ts', 'test.tsx'],
+  collectCoverageFrom: [
+    "**/*.{ts,tsx,js,jsx}",
+    "!**/node_modules/**",
+    "!**/vendor/**"
+  ]
 };

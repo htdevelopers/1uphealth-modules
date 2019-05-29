@@ -19,10 +19,14 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "typescript-tslint-plugin": "^0.4.0",
-    "jest": "^24.8.0"
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2"
   },
   "scripts": {
     "test": "lerna exec -- yarn test",
+    "test:coverage": "lerna exec -- yarn test --coverage",
+    "test:watch": "lerna exec -- yarn test --watch",
+    "build": "lerna bootstrap --use-workspaces",
     "pretest": "lerna bootstrap --use-workspaces",
     "prepublish": "lerna run prepare --use-workspaces"
   }
