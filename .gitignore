@@ -32,3 +32,6 @@ npm-debug.log*
 node_modules
 
 .vscode
+
+packages/*/dist/*
+packages/*/node_modules

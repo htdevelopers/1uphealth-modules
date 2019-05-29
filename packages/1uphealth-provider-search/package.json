@@ -1,5 +1,5 @@
 {
-  "name": "@1uphealth-temp/api",
+  "name": "@1uphealth-temp/provider-search",
   "version": "0.0.3",
   "description": "description...",
   "main": "dist/index",
@@ -31,5 +31,8 @@
   },
   "dependencies": {
   },
-  "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
+  "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223",
+  "engines": {
+    "node": ">=8.0.0"
+  }
 }

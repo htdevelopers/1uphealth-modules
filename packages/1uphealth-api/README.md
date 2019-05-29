@@ -1,3 +1,3 @@
-# @1uphealth-temp/api
+# @1uphealth/api
 
 WIP...
