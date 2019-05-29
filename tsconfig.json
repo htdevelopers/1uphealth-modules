@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "lib": ["es6", "dom"],
     "declaration": true,
     "jsx": "react",
     "strict": true,
@@ -12,6 +13,12 @@
     "baseUrl": "./packages",
     "forceConsistentCasingInFileNames": true,
     "noErrorTruncation": true,
+    "removeComments": true,
+    "noEmitOnError": false,
+    "locale": "en",
+    "emitBOM": true,
+    "diagnostics": true,
+    "emitDecoratorMetadata": true,
     "plugins": [
       {
         "name": "typescript-tslint-plugin"

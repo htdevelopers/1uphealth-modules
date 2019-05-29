@@ -1,3 +1,3 @@
-export default function api(): string {
-  return 'api';
-}
+import Api from './src/Api';
+
+export default Api;
