@@ -1,6 +1,6 @@
 {
   "name": "@1uphealth-temp/api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "description...",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -28,8 +28,6 @@
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
-  },
-  "dependencies": {
   },
   "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
 }
