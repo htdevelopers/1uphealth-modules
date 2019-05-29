@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/htdevelopers/1uphealth-modules
+    parallelism: 1
+    shell: /bin/bash --login
+    docker:
+      - image: circleci/node:12.3.1-browsers
+        command: /sbin/init
+    steps:
+      - checkout
+      - run:
+          name: Yarn Install
+          command: yarn && yarn build
+      - run:
+          name: yarn test
+          command: yarn test
