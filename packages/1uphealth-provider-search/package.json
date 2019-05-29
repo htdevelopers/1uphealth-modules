@@ -14,7 +14,7 @@
   "scripts": {
     "prepare": "tsc",
     "pretest": "tsc",
-    "test": "echo 'unimplemented tests...'"
+    "test": "jest"
   },
   "keywords": [
     "1uphealth",

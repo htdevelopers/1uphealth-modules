@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@types/react": "^16.8.19",
+    "@types/jest": "^24.0.13",
     "lerna": "3.14.1",
     "rollup": "^1.12.4",
     "typescript": "^3.4.5",
@@ -17,11 +18,12 @@
     "tslint": "^5.16.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "typescript-tslint-plugin": "^0.4.0"
+    "typescript-tslint-plugin": "^0.4.0",
+    "jest": "^24.8.0"
   },
   "scripts": {
-    "test": "lerna run test --use-workspaces",
-    "pretest": "lerna bootstrap --use-workspaces && npm run lint",
+    "test": "lerna exec -- yarn test",
+    "pretest": "lerna bootstrap --use-workspaces",
     "prepublish": "lerna run prepare --use-workspaces"
   }
 }

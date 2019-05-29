@@ -17,7 +17,6 @@
     "noEmitOnError": false,
     "locale": "en",
     "emitBOM": true,
-    "diagnostics": true,
     "emitDecoratorMetadata": true,
     "plugins": [
       {
