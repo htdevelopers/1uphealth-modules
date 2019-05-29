@@ -24,10 +24,10 @@
   },
   "scripts": {
     "test": "lerna exec -- yarn test",
-    "test:coverage": "lerna exec -- yarn test --coverage",
-    "test:watch": "lerna exec -- yarn test --watch",
+    "test:coverage": "yarn test -- --coverage",
+    "test:watch": "yarn test -- --watch",
     "build": "lerna bootstrap --use-workspaces",
     "pretest": "lerna bootstrap --use-workspaces",
-    "prepublish": "lerna run prepare --use-workspaces"
+    "prepublish": "yarn build"
   }
 }

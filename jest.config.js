@@ -5,7 +5,7 @@ module.exports = {
   testEnvironment: 'node',
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'test.ts', 'test.tsx'],
   collectCoverageFrom: [
-    "**/*.{ts,tsx,js,jsx}",
+    "src/*.{ts,tsx,js,jsx}",
     "!**/node_modules/**",
     "!**/vendor/**"
   ]
