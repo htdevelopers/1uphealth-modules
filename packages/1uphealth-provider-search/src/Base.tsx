@@ -1,12 +1,20 @@
 import * as React from 'react';
 
-class Base extends React.Component {
-  constructor(props: {}) {
+interface Props {}
+
+interface State {}
+
+class Base extends React.Component<Props, State> {
+  public constructor(props: Props) {
     super(props);
   }
 
   render() {
-    return <></>;
+    return (
+      <>
+        {this.props.children}
+      </>
+    );
   }
 }
 

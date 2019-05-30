@@ -1,3 +1,3 @@
-import Api from './src/Api';
+import ApiSDK from './src/api-sdk';
 
-export default Api;
+export default ApiSDK;

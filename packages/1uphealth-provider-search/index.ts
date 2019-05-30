@@ -1,9 +1,9 @@
+import Base from './src/Base';
 import List from './src/List';
 import Input from './src/Input';
-import Base from './src/Base';
 
-export {
+export default {
+  Base,
   List,
   Input,
 };
-export default Base;

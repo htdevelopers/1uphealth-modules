@@ -14,6 +14,7 @@
   "scripts": {
     "prepare": "tsc",
     "pretest": "tsc",
+    "watch": "tsc -w",
     "test": "jest"
   },
   "keywords": [
@@ -28,6 +29,10 @@
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
+  },
+  "dependencies": {
+    "prop-types-ts": "^0.6.2",
+    "io-ts": "^1.8.6"
   },
   "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223",
   "engines": {

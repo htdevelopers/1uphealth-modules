@@ -14,6 +14,7 @@
   "scripts": {
     "prepare": "tsc",
     "pretest": "tsc",
+    "watch": "tsc -w",
     "test": "jest"
   },
   "keywords": [
@@ -28,6 +29,17 @@
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "nock": "^10.0.6",
+    "@types/nock": "^10.0.3",
+    "@types/lodash.isstring": "^4.0.6",
+    "@types/lodash.isempty": "^4.4.6"
+  },
+  "dependencies": {
+    "request": "^2.88.0",
+    "lodash.isstring": "^4.0.1",
+    "lodash.isempty": "^4.4.0"
   },
   "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
 }
