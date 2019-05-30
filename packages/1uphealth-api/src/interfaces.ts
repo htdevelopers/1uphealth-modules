@@ -17,8 +17,7 @@ export interface Config {
 }
 
 export interface UserManagementScope {
-  getUsers(parameters: OneUpUserId & AppUserId):
-    Promise<HttpClientResponse>;
+  getUsers(parameters?: OneUpUserId & AppUserId): Promise<HttpClientResponse>;
 }
 
 export interface OneUpUserId {
@@ -35,4 +34,8 @@ export interface ClientId {
 
 export interface ClientSecret {
   oneup_user_id: string;
+}
+
+export interface UserActive {
+  active: boolean;
 }

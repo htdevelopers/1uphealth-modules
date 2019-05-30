@@ -33,21 +33,21 @@ describe('http-client', () => {
     expect(error).toBeTruthy();
   });
 
-  it('get - returns correct reponse', async ()  => {
+  it('get - returns correct reponse', async () => {
     const httpClient = new HttpClient();
     const response = await httpClient.get('http://test-nock-url.com');
     expect(response.status).toEqual(200);
     expect(response.body).toEqual(JSON.stringify([]));
   });
 
-  it('post - returns correct reponse with provided body', async ()  => {
+  it('post - returns correct reponse with provided body', async () => {
     const httpClient = new HttpClient();
     const response = await httpClient.post('http://test-nock-url.com', { body: { test: 'test' } });
     expect(response.status).toEqual(201);
     expect(response.body).toEqual(JSON.stringify({ success: true }));
   });
 
-  it('post - returns correct reponse without provided body', async ()  => {
+  it('post - returns correct reponse without provided body', async () => {
     const httpClient = new HttpClient();
     const response = await httpClient.post('http://test-nock-url.com', {});
     expect(response.status).toEqual(200);

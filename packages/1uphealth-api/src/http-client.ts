@@ -41,17 +41,13 @@ export default class HttpClient {
         uri,
         Object.assign({}, this.defaultOptions, options),
         (error, response, body) => {
-          return error
-            ? reject(error)
-            : resolve(this.buildResponse(response, body));
-        });
+          return error ? reject(error) : resolve(this.buildResponse(response, body));
+        },
+      );
     });
   }
 
-  private buildResponse(
-    response: request.Response,
-    body: any,
-  ): HttpClientResponse {
+  private buildResponse(response: request.Response, body: any): HttpClientResponse {
     return {
       body,
       status: response.statusCode,
