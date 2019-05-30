@@ -99,4 +99,48 @@ describe('api-sdk', () => {
       expect(errorCount).toEqual(2);
     });
   });
+
+  describe('updateUser', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'tezt',
+    });
+    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
+
+    it('should return json response', async () => {
+      const mock = {
+        ...responseMock,
+        body: JSON.stringify({ test: 1 }),
+      };
+      const stub = sinon.stub(HttpClient.prototype, 'put').resolves(mock);
+      expect(
+        await sdkInstance.updateUser({ active: false, app_user_id: 'test', oneup_user_id: 'test' }),
+      ).toEqual(mock);
+      stub.restore();
+    });
+
+    it('should validate function args', async () => {
+      const stub = sinon.stub(HttpClient.prototype, 'put').resolves({ ...responseMock });
+      let errorCount = 0;
+
+      const argArr = [
+        typemoq.Mock.ofType<UserActive & AppUserId & OneUpUserId>().object,
+        { ...typemoq.Mock.ofType<UserActive & AppUserId & OneUpUserId>().object, app_user_id: '' },
+        { active: true, app_user_id: '', oneup_user_id: '' },
+      ];
+
+      await Promise.all(
+        argArr.map(async (arg) => {
+          try {
+            await sdkInstance.updateUser(arg);
+          } catch (_e) {
+            errorCount += 1;
+          }
+        }),
+      );
+
+      stub.restore();
+      expect(errorCount).toEqual(2);
+    });
+  });
 });

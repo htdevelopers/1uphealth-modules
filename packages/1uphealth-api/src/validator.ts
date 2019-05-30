@@ -16,4 +16,17 @@ export default class Validator {
       throw new Error("Fields 'app_user_id' and 'active' are required");
     }
   }
+
+  static updateUser(payload: AppUserId & UserActive & OneUpUserId): void {
+    if (
+      isEmpty(payload) ||
+      !(
+        isString(payload.app_user_id) &&
+        isString(payload.oneup_user_id) &&
+        isBoolean(payload.active)
+      )
+    ) {
+      throw new Error("Fields 'app_user_id', 'active' and 'oneup_user_id' are required");
+    }
+  }
 }

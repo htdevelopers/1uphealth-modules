@@ -1,10 +1,8 @@
 import {
   Config,
   UserManagementScope,
-  OneUpUserId,
-  AppUserId,
-  UserActive,
   HttpClientResponse,
+  Methods,
 } from './interfaces';
 import HttpClient from './http-client';
 import Validator from './validator';
@@ -66,11 +64,11 @@ export default class OneUpApiSDK implements Config, UserManagementScope {
   /**
    * GET /user-management/v1/user
    *
-   * @param {(OneUpUserId & AppUserId)} [parameters]
+   * @param {Methods.GetUsers} [parameters]
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async getUsers(parameters?: OneUpUserId & AppUserId): Promise<HttpClientResponse> {
+  async getUsers(parameters?: Methods.GetUsers): Promise<HttpClientResponse> {
     if (parameters !== undefined) {
       Validator.getUsers(parameters);
     }
@@ -91,17 +89,37 @@ export default class OneUpApiSDK implements Config, UserManagementScope {
   /**
    * POST /user-management/v1/user
    *
-   * @param {(AppUserId & UserActive)} payload
+   * @param {Methods.CreateUser} payload
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async createUser(payload: AppUserId & UserActive): Promise<HttpClientResponse> {
+  async createUser(payload: Methods.CreateUser): Promise<HttpClientResponse> {
     Validator.createUser(payload);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         app_user_id: payload.app_user_id,
+        active: payload.active,
+      },
+    });
+  }
+
+  /**
+   * PUT /user-management/v1/user
+   *
+   * @param {Methods.UpdateUser} payload
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof OneUpApiSDK
+   */
+  async updateUser(payload: Methods.UpdateUser): Promise<HttpClientResponse> {
+    Validator.updateUser(payload);
+    return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
+      qs: {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        app_user_id: payload.app_user_id,
+        oneup_user_id: payload.oneup_user_id,
         active: payload.active,
       },
     });

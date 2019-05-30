@@ -39,3 +39,9 @@ export interface ClientSecret {
 export interface UserActive {
   active: boolean;
 }
+
+export namespace Methods {
+  export interface GetUsers extends OneUpUserId, AppUserId {}
+  export interface CreateUser extends AppUserId, UserActive {}
+  export interface UpdateUser extends AppUserId, UserActive, OneUpUserId {}
+}
