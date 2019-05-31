@@ -1,7 +1,7 @@
 import isString from 'lodash.isstring';
 import isBoolean from 'lodash.isboolean';
 import isEmpty from 'lodash.isempty';
-import { OneUpUserId, AppUserId, UserActive, Method } from './interfaces';
+import { Method, Auth } from './interfaces';
 
 export default class Validator {
   static getUsers(parameters: Method.GetUsers): void {
@@ -33,6 +33,12 @@ export default class Validator {
   static generateUserAuthCode(payload: Method.GenerateUserAuthCode): void {
     if (isEmpty(payload) || !(isString(payload.app_user_id))) {
       throw new Error("Field 'app_user_id'is required");
+    }
+  }
+
+  static checkAccessToken(accessToken: Auth['accessToken']): void {
+    if (isEmpty(accessToken) || !isString(accessToken)) {
+      throw new Error('Not Authorized: Access token is not provided or is invalid');
     }
   }
 }

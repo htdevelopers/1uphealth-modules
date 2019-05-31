@@ -16,11 +16,22 @@ export interface Config {
   clientSecret: string;
 }
 
-export interface UserManagementScope {
-  getUsers(parameters?: Method.GetUsers): Promise<HttpClientResponse>;
-  createUser(payload: Method.CreateUser): Promise<HttpClientResponse>;
-  updateUser(payload: Method.UpdateUser): Promise<HttpClientResponse>;
-  generateUserAuthCode(payload: Method.GenerateUserAuthCode): Promise<HttpClientResponse>;
+export interface Auth {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export namespace Scope {
+  export interface UserManagement {
+    getUsers(parameters?: Method.GetUsers): Promise<HttpClientResponse>;
+    createUser(payload: Method.CreateUser): Promise<HttpClientResponse>;
+    updateUser(payload: Method.UpdateUser): Promise<HttpClientResponse>;
+    generateUserAuthCode(payload: Method.GenerateUserAuthCode): Promise<HttpClientResponse>;
+  }
+
+  export interface UI {
+    getHealthSystemPickerIFrame(): Promise<HttpClientResponse>;
+  }
 }
 
 export interface OneUpUserId {
