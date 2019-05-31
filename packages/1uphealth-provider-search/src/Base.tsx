@@ -10,11 +10,7 @@ class Base extends React.Component<Props, State> {
   }
 
   render() {
-    return (
-      <>
-        {this.props.children}
-      </>
-    );
+    return <>{this.props.children}</>;
   }
 }
 
