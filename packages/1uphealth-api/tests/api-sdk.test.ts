@@ -29,7 +29,6 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
       expect(await sdkInstance.getUsers()).toEqual(mock);
       stub.restore();
-      expect((await sdkInstance.getUsers()).body).toBeDefined();
     });
 
     it('should validate function args', async () => {
@@ -218,6 +217,39 @@ describe('api-sdk', () => {
       }
       stub.restore();
       expect(error).toEqual(1);
+    });
+  });
+
+  describe('searchConnectProvider', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
+
+    it('should throw error when accessToken is not provided', async () => {
+      sdkInstance.accessToken = undefined;
+      let error = 0;
+      const stub = sinon.stub(HttpClient.prototype, 'get').resolves(responseMock);
+      try {
+        await sdkInstance.searchConnectProvider({ query: 'john' });
+      } catch (e) {
+        error += 1;
+      }
+      stub.restore();
+      expect(error).toEqual(1);
+    });
+
+    it('should return json response', async () => {
+      sdkInstance.accessToken = 'test';
+      const mock = {
+        ...responseMock,
+        body: JSON.stringify({}),
+      };
+      const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
+      const response = await sdkInstance.searchConnectProvider({ query: 'john' });
+      expect(response).toEqual(mock);
+      stub.restore();
     });
   });
 });

@@ -18,7 +18,8 @@ import Validator from './validator';
  * @implements {Config}
  * @implements {UserManagementScope}
  */
-export default class OneUpApiSDK implements Config, Auth, Scope.UserManagement, Scope.UI {
+export default class OneUpApiSDK
+  implements Config, Auth, Scope.UserManagement, Scope.UI, Scope.Connect {
   /**
    *
    *
@@ -175,6 +176,28 @@ export default class OneUpApiSDK implements Config, Auth, Scope.UserManagement, 
       qs: {
         client_id: this.clientId,
         access_token: this.accessToken,
+      },
+    });
+  }
+
+  /**
+   * GET /connect/system/provider
+   *
+   * @param {Method.SearchConnectProvider} { query: q }
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof OneUpApiSDK
+   */
+  async searchConnectProvider(
+    { query: q }: Method.SearchConnectProvider,
+  ): Promise<HttpClientResponse> {
+    Validator.checkAccessToken(this.accessToken);
+    return this.httpClient.get(`${this.API_URL_BASE}/connect/system/provider/search`, {
+      headers: {
+        ...this.httpClient.defaultOptions.headers,
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+      qs: {
+        q,
       },
     });
   }

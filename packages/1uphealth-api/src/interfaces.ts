@@ -32,6 +32,10 @@ export namespace Scope {
   export interface UI {
     getHealthSystemPickerIFrame(): Promise<HttpClientResponse>;
   }
+
+  export interface Connect {
+    searchConnectProvider(payload: Method.SearchConnectProvider): Promise<HttpClientResponse>;
+  }
 }
 
 export interface OneUpUserId {
@@ -54,9 +58,14 @@ export interface UserActive {
   active: boolean;
 }
 
+export interface Query {
+  query: string;
+}
+
 export namespace Method {
   export interface GetUsers extends OneUpUserId, AppUserId {}
   export interface CreateUser extends AppUserId, UserActive {}
   export interface UpdateUser extends AppUserId, UserActive, OneUpUserId {}
   export interface GenerateUserAuthCode extends AppUserId {}
+  export interface SearchConnectProvider extends Query {}
 }
