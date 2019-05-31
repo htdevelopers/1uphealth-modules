@@ -2,7 +2,7 @@ import {
   Config,
   UserManagementScope,
   HttpClientResponse,
-  Methods,
+  Method,
 } from './interfaces';
 import HttpClient from './http-client';
 import Validator from './validator';
@@ -64,11 +64,11 @@ export default class OneUpApiSDK implements Config, UserManagementScope {
   /**
    * GET /user-management/v1/user
    *
-   * @param {Methods.GetUsers} [parameters]
+   * @param {Method.GetUsers} [parameters]
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async getUsers(parameters?: Methods.GetUsers): Promise<HttpClientResponse> {
+  async getUsers(parameters?: Method.GetUsers): Promise<HttpClientResponse> {
     if (parameters !== undefined) {
       Validator.getUsers(parameters);
     }
@@ -89,11 +89,11 @@ export default class OneUpApiSDK implements Config, UserManagementScope {
   /**
    * POST /user-management/v1/user
    *
-   * @param {Methods.CreateUser} payload
+   * @param {Method.CreateUser} payload
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async createUser(payload: Methods.CreateUser): Promise<HttpClientResponse> {
+  async createUser(payload: Method.CreateUser): Promise<HttpClientResponse> {
     Validator.createUser(payload);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
@@ -108,11 +108,11 @@ export default class OneUpApiSDK implements Config, UserManagementScope {
   /**
    * PUT /user-management/v1/user
    *
-   * @param {Methods.UpdateUser} payload
+   * @param {Method.UpdateUser} payload
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async updateUser(payload: Methods.UpdateUser): Promise<HttpClientResponse> {
+  async updateUser(payload: Method.UpdateUser): Promise<HttpClientResponse> {
     Validator.updateUser(payload);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
@@ -121,6 +121,17 @@ export default class OneUpApiSDK implements Config, UserManagementScope {
         app_user_id: payload.app_user_id,
         oneup_user_id: payload.oneup_user_id,
         active: payload.active,
+      },
+    });
+  }
+
+  async generateUserAuthCode(payload: Method.GenerateUserAuthCode): Promise<HttpClientResponse> {
+    Validator.generateUserAuthCode(payload);
+    return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
+      qs: {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        app_user_id: payload.app_user_id,
       },
     });
   }

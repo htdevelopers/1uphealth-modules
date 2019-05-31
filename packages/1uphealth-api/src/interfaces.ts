@@ -17,7 +17,10 @@ export interface Config {
 }
 
 export interface UserManagementScope {
-  getUsers(parameters?: OneUpUserId & AppUserId): Promise<HttpClientResponse>;
+  getUsers(parameters?: Method.GetUsers): Promise<HttpClientResponse>;
+  createUser(payload: Method.CreateUser): Promise<HttpClientResponse>;
+  updateUser(payload: Method.UpdateUser): Promise<HttpClientResponse>;
+  generateUserAuthCode(payload: Method.GenerateUserAuthCode): Promise<HttpClientResponse>;
 }
 
 export interface OneUpUserId {
@@ -40,8 +43,9 @@ export interface UserActive {
   active: boolean;
 }
 
-export namespace Methods {
+export namespace Method {
   export interface GetUsers extends OneUpUserId, AppUserId {}
   export interface CreateUser extends AppUserId, UserActive {}
   export interface UpdateUser extends AppUserId, UserActive, OneUpUserId {}
+  export interface GenerateUserAuthCode extends AppUserId {}
 }

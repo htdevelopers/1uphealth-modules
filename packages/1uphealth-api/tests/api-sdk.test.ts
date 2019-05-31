@@ -3,7 +3,7 @@ import * as typemoq from 'typemoq';
 import OneUpApiSDK from '../src/api-sdk';
 import HttpClient from '../src/http-client';
 import { HttpClientResponse, AppUserId, OneUpUserId } from '../dist/src/interfaces';
-import { UserActive } from '../src/interfaces';
+import { UserActive, Method } from '../src/interfaces';
 
 describe('api-sdk', () => {
   it('can be initialized', () => {
@@ -17,7 +17,7 @@ describe('api-sdk', () => {
   describe('getUsers', () => {
     const sdkInstance = new OneUpApiSDK({
       clientId: 'test',
-      clientSecret: 'tezt',
+      clientSecret: 'test',
     });
     const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
@@ -37,9 +37,9 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        { ...typemoq.Mock.ofType<OneUpUserId & AppUserId>().object },
-        typemoq.Mock.ofType<OneUpUserId & AppUserId>().object,
-        { ...typemoq.Mock.ofType<OneUpUserId & AppUserId>().object, app_user_id: '' },
+        { ...typemoq.Mock.ofType<Method.GetUsers>().object },
+        typemoq.Mock.ofType<Method.GetUsers>().object,
+        { ...typemoq.Mock.ofType<Method.GetUsers>().object, app_user_id: '' },
         { app_user_id: '', oneup_user_id: '' },
       ];
 
@@ -61,7 +61,7 @@ describe('api-sdk', () => {
   describe('createUser', () => {
     const sdkInstance = new OneUpApiSDK({
       clientId: 'test',
-      clientSecret: 'tezt',
+      clientSecret: 'test',
     });
     const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
@@ -80,8 +80,8 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        typemoq.Mock.ofType<UserActive & AppUserId>().object,
-        { ...typemoq.Mock.ofType<UserActive & AppUserId>().object, app_user_id: '' },
+        typemoq.Mock.ofType<Method.CreateUser>().object,
+        { ...typemoq.Mock.ofType<Method.CreateUser>().object, app_user_id: '' },
         { active: true, app_user_id: '' },
       ];
 
@@ -103,7 +103,7 @@ describe('api-sdk', () => {
   describe('updateUser', () => {
     const sdkInstance = new OneUpApiSDK({
       clientId: 'test',
-      clientSecret: 'tezt',
+      clientSecret: 'test',
     });
     const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
@@ -124,8 +124,8 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        typemoq.Mock.ofType<UserActive & AppUserId & OneUpUserId>().object,
-        { ...typemoq.Mock.ofType<UserActive & AppUserId & OneUpUserId>().object, app_user_id: '' },
+        typemoq.Mock.ofType<Method.UpdateUser>().object,
+        { ...typemoq.Mock.ofType<Method.UpdateUser>().object, app_user_id: '' },
         { active: true, app_user_id: '', oneup_user_id: '' },
       ];
 
@@ -141,6 +141,49 @@ describe('api-sdk', () => {
 
       stub.restore();
       expect(errorCount).toEqual(2);
+    });
+  });
+
+  describe('generateUserAuthCode', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
+
+    it('should return json response', async () => {
+      const mock = {
+        ...responseMock,
+        body: JSON.stringify({ test: 1 }),
+      };
+      const stub = sinon.stub(HttpClient.prototype, 'post').resolves(mock);
+      expect(
+        await sdkInstance.generateUserAuthCode({ app_user_id: 'test' }),
+      ).toEqual(mock);
+      stub.restore();
+    });
+
+    it('should validate function args', async () => {
+      const stub = sinon.stub(HttpClient.prototype, 'post').resolves({ ...responseMock });
+      let errorCount = 0;
+
+      const argArr = [
+        typemoq.Mock.ofType<Method.GenerateUserAuthCode>().object,
+        { ...typemoq.Mock.ofType<Method.GenerateUserAuthCode>().object, app_user_id: '' },
+      ];
+
+      await Promise.all(
+        argArr.map(async (arg) => {
+          try {
+            await sdkInstance.generateUserAuthCode(arg);
+          } catch (_e) {
+            errorCount += 1;
+          }
+        }),
+      );
+
+      stub.restore();
+      expect(errorCount).toEqual(1);
     });
   });
 });
