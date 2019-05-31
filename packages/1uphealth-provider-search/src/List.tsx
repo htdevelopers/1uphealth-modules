@@ -27,7 +27,7 @@ class List extends React.Component {
         />
       </svg>
     );
-  };
+  }
 
   render() {
     return (

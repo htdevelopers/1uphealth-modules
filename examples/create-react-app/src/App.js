@@ -11,7 +11,14 @@ function App() {
   return (
     <div className="App">
       <ProviderSearch.Base api={api}>
-        <ProviderSearch.Input />
+        <ProviderSearch.Input
+          inputLabel="Providers"
+          inputProps={{
+            onChange: (e) => console.log(e.target.value),
+            onBlur: () => console.log('BLUR!'),
+            onFocus: () => console.log('FOCUS!'),
+          }}
+        />
         <ProviderSearch.List />
       </ProviderSearch.Base>
     </div>

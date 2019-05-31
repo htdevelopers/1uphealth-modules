@@ -1,7 +1,12 @@
 import * as React from 'react';
 
-class Input extends React.Component {
-  constructor(props: {}) {
+interface Props {
+  inputLabel: string;
+  inputProps: React.InputHTMLAttributes<HTMLInputElement>;
+}
+
+class Input extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
   }
 
@@ -37,12 +42,18 @@ class Input extends React.Component {
   }
 
   render(): JSX.Element {
+    const { inputProps, inputLabel } = this.props;
+
     return (
       <div className="input-container">
-        <div className="input-container__label">Providers</div>
-        <div className="input-container__wrapper">
+        <div className="input-container__label">{inputLabel}</div>
+        <div
+          className="input-container__wrapper"
+        >
           <div className="input-container__wrapper__icon">{this.renderInputIcon()}</div>
-          <input type="text" placeholder="Search" />
+          <input type="text" placeholder="Search"
+          {...inputProps}
+          />
         </div>
       </div>
     );
