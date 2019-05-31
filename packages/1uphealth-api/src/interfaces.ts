@@ -35,6 +35,7 @@ export namespace Scope {
 
   export interface Connect {
     searchConnectProvider(payload: Method.SearchConnectProvider): Promise<HttpClientResponse>;
+    getDevices(): Promise<HttpClientResponse>;
   }
 }
 

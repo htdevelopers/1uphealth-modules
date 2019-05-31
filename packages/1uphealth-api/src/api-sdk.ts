@@ -236,4 +236,20 @@ export default class OneUpApiSDK
       },
     });
   }
+
+  /**
+   * Currently 1upHealth allows importing data from either Fitbit, GoogleFit or Withings.
+   *
+   * @returns {Promise<HttpClientResponse>}
+   * Returns a list of device types that can be used as sources.
+   * @memberof OneUpApiSDK
+   */
+  async getDevices(): Promise<HttpClientResponse> {
+    return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
+      qs: {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+      },
+    });
+  }
 }

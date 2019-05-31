@@ -252,4 +252,23 @@ describe('api-sdk', () => {
       stub.restore();
     });
   });
+
+  describe('getDevices', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
+
+    it('should return json response', async () => {
+      const mock = {
+        ...responseMock,
+        body: JSON.stringify({}),
+      };
+      const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
+      const response = await sdkInstance.getDevices();
+      expect(response).toEqual(mock);
+      stub.restore();
+    });
+  });
 });
