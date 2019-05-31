@@ -12,9 +12,10 @@
     "dist/index.d.ts"
   ],
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "tsc && sass src/index.scss dist/index.css",
     "pretest": "tsc",
     "watch": "tsc -w",
+    "sass:watch": "sass --watch src:dist",
     "test": "jest"
   },
   "keywords": [
