@@ -23,10 +23,10 @@ export interface Auth {
 
 export namespace Scope {
   export interface UserManagement {
-    getUsers(parameters?: Method.GetUsers): Promise<HttpClientResponse>;
-    createUser(payload: Method.CreateUser): Promise<HttpClientResponse>;
-    updateUser(payload: Method.UpdateUser): Promise<HttpClientResponse>;
-    generateUserAuthCode(payload: Method.GenerateUserAuthCode): Promise<HttpClientResponse>;
+    getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse>;
+    createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse>;
+    updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse>;
+    generateUserAuthCode(payload: MethodArg.GenerateUserAuthCode): Promise<HttpClientResponse>;
   }
 
   export interface UI {
@@ -34,8 +34,9 @@ export namespace Scope {
   }
 
   export interface Connect {
-    searchConnectProvider(payload: Method.SearchConnectProvider): Promise<HttpClientResponse>;
+    searchConnectProvider(payload: MethodArg.SearchConnectProvider): Promise<HttpClientResponse>;
     getDevices(): Promise<HttpClientResponse>;
+    getSupportedHealthSystems(): Promise<HttpClientResponse>;
   }
 }
 
@@ -63,7 +64,7 @@ export interface Query {
   query: string;
 }
 
-export namespace Method {
+export namespace MethodArg {
   export interface GetUsers extends OneUpUserId, AppUserId {}
   export interface CreateUser extends AppUserId, UserActive {}
   export interface UpdateUser extends AppUserId, UserActive, OneUpUserId {}

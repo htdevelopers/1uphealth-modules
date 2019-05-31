@@ -3,7 +3,7 @@ import * as typemoq from 'typemoq';
 import OneUpApiSDK from '../src/api-sdk';
 import HttpClient from '../src/http-client';
 import { HttpClientResponse, AppUserId, OneUpUserId } from '../dist/src/interfaces';
-import { UserActive, Method } from '../src/interfaces';
+import { UserActive, MethodArg } from '../src/interfaces';
 
 describe('api-sdk', () => {
   it('can be initialized', () => {
@@ -36,9 +36,9 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        { ...typemoq.Mock.ofType<Method.GetUsers>().object },
-        typemoq.Mock.ofType<Method.GetUsers>().object,
-        { ...typemoq.Mock.ofType<Method.GetUsers>().object, app_user_id: '' },
+        { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object },
+        typemoq.Mock.ofType<MethodArg.GetUsers>().object,
+        { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object, app_user_id: '' },
         { app_user_id: '', oneup_user_id: '' },
       ];
 
@@ -79,8 +79,8 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        typemoq.Mock.ofType<Method.CreateUser>().object,
-        { ...typemoq.Mock.ofType<Method.CreateUser>().object, app_user_id: '' },
+        typemoq.Mock.ofType<MethodArg.CreateUser>().object,
+        { ...typemoq.Mock.ofType<MethodArg.CreateUser>().object, app_user_id: '' },
         { active: true, app_user_id: '' },
       ];
 
@@ -123,8 +123,8 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        typemoq.Mock.ofType<Method.UpdateUser>().object,
-        { ...typemoq.Mock.ofType<Method.UpdateUser>().object, app_user_id: '' },
+        typemoq.Mock.ofType<MethodArg.UpdateUser>().object,
+        { ...typemoq.Mock.ofType<MethodArg.UpdateUser>().object, app_user_id: '' },
         { active: true, app_user_id: '', oneup_user_id: '' },
       ];
 
@@ -167,8 +167,8 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       const argArr = [
-        typemoq.Mock.ofType<Method.GenerateUserAuthCode>().object,
-        { ...typemoq.Mock.ofType<Method.GenerateUserAuthCode>().object, app_user_id: '' },
+        typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object,
+        { ...typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object, app_user_id: '' },
       ];
 
       await Promise.all(
@@ -267,6 +267,25 @@ describe('api-sdk', () => {
       };
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
       const response = await sdkInstance.getDevices();
+      expect(response).toEqual(mock);
+      stub.restore();
+    });
+  });
+
+  describe('getSupportedHealthSystems', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
+
+    it('should return json response', async () => {
+      const mock = {
+        ...responseMock,
+        body: JSON.stringify({}),
+      };
+      const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
+      const response = await sdkInstance.getSupportedHealthSystems();
       expect(response).toEqual(mock);
       stub.restore();
     });

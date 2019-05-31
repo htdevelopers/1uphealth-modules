@@ -1,11 +1,12 @@
 // TODO: Handle 302 anauthorized redirection in all endpoints..
+// TODO: collect all endpoints to dict
 
 import {
   Config,
   Scope,
   Auth,
   HttpClientResponse,
-  Method,
+  MethodArg,
 } from './interfaces';
 import HttpClient from './http-client';
 import Validator from './validator';
@@ -85,18 +86,19 @@ export default class OneUpApiSDK
   }
 
   /**
-   * **GET /user-management/v1/user** \
+   * **GET /user-management/v1/user**
+   *
    * Get the list of all the users that exist inside your 1up Developer Application,
    * with the option of filtering by specific users
    *
-   * @param {Method.GetUsers} [parameters]
+   * @param {MethodArg.GetUsers} [parameters]
    * **oneup_user_id** — string \
    * **app_user_id** — string
    * @returns {Promise<HttpClientResponse>}
    * An array of user objects
    * @memberof OneUpApiSDK
    */
-  async getUsers(parameters?: Method.GetUsers): Promise<HttpClientResponse> {
+  async getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse> {
     if (parameters !== undefined) {
       Validator.getUsers(parameters);
     }
@@ -115,15 +117,16 @@ export default class OneUpApiSDK
   }
 
   /**
-   * **POST /user-management/v1/user** \
+   * **POST /user-management/v1/user**
+   *
    * Will cause a user to be created with the attributes passed in the request body. \
    * The request won't fail if the user already exists but rather will return the user data but with
    *
-   * @param {Method.CreateUser} payload
+   * @param {MethodArg.CreateUser} payload
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async createUser(payload: Method.CreateUser): Promise<HttpClientResponse> {
+  async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
     Validator.createUser(payload);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
@@ -136,16 +139,17 @@ export default class OneUpApiSDK
   }
 
   /**
-   * **PUT /user-management/v1/user** \
+   * **PUT /user-management/v1/user**
+   *
    * Can be used to modify an existing user object. It is possible to modify the **app_user_id**,
    * but the **oneup_user_id** is assigned when the user is created and cannot be changed.
    *
-   * @param {Method.UpdateUser} payload
+   * @param {MethodArg.UpdateUser} payload
    * @returns {Promise<HttpClientResponse>}
    * Will return the new user object
    * @memberof OneUpApiSDK
    */
-  async updateUser(payload: Method.UpdateUser): Promise<HttpClientResponse> {
+  async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
     Validator.updateUser(payload);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
@@ -159,18 +163,19 @@ export default class OneUpApiSDK
   }
 
   /**
-   * **POST /user-management/v1/user/auth-code** \
+   * **POST /user-management/v1/user/auth-code**
+   *
    * A backend app can use this endpoint to get a new authorization code for a user. \
    * Note that this endpoint should not be called in a browser context because \
    * it would require exposing your app's secret key to users.
    *
-   * @param {Method.GenerateUserAuthCode} payload
+   * @param {MethodArg.GenerateUserAuthCode} payload
    * @returns {Promise<HttpClientResponse>}
    * Returns an access token and a refresh token,
    * which can be used to authenticate requests made on behalf of the user.
    * @memberof OneUpApiSDK
    */
-  async generateUserAuthCode(payload: Method.GenerateUserAuthCode): Promise<HttpClientResponse> {
+  async generateUserAuthCode(payload: MethodArg.GenerateUserAuthCode): Promise<HttpClientResponse> {
     Validator.generateUserAuthCode(payload);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
       qs: {
@@ -182,7 +187,8 @@ export default class OneUpApiSDK
   }
 
   /**
-   * **GET /connect/marketplace** \
+   * **GET /connect/marketplace**
+   *
    * A common pattern is to ask the user to connect data from their health system to the app. \
    * This endpoint returns a simple html page that can be used as a starting point for walking \
    * the user through the data connect flow. For more details, \
@@ -205,11 +211,12 @@ export default class OneUpApiSDK
   }
 
   /**
-   * **GET /connect/system/provider** \
+   * **GET /connect/system/provider**
+   *
    * Used to run a text search on health systems, often for the purpose of allowing the user \
    * to find their health system's authorization portal.
    *
-   * @param {Method.SearchConnectProvider}
+   * @param {MethodArg.SearchConnectProvider}
    * { query: string; } \
    * This is how you specify the text to search for. \
    * It can be a doctor's name, clinic, hospital, or address.
@@ -223,7 +230,7 @@ export default class OneUpApiSDK
    * @memberof OneUpApiSDK
    */
   async searchConnectProvider(
-    { query: q }: Method.SearchConnectProvider,
+    { query: q }: MethodArg.SearchConnectProvider,
   ): Promise<HttpClientResponse> {
     Validator.checkAccessToken(this.accessToken);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/provider/search`, {
@@ -238,6 +245,8 @@ export default class OneUpApiSDK
   }
 
   /**
+   * **GET /connect/system/device**
+   *
    * Currently 1upHealth allows importing data from either Fitbit, GoogleFit or Withings.
    *
    * @returns {Promise<HttpClientResponse>}
@@ -246,6 +255,26 @@ export default class OneUpApiSDK
    */
   async getDevices(): Promise<HttpClientResponse> {
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
+      qs: {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+      },
+    });
+  }
+
+  /**
+   * **GET /connect/system/clinical**
+   *
+   * Use this endpoint to query the full list of supported health systems. \
+   * If your use-case would benefit from full-text search of providers on fields \
+   * like name, address, or clinician names, then we recommend \
+   * using the Provider Search endpoint instead.
+   *
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof OneUpApiSDK
+   */
+  async getSupportedHealthSystems(): Promise<HttpClientResponse> {
+    return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
       qs: {
         client_id: this.clientId,
         client_secret: this.clientSecret,

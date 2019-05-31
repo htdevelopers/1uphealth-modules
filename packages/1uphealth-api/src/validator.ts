@@ -1,7 +1,7 @@
 import isString from 'lodash.isstring';
 import isBoolean from 'lodash.isboolean';
 import isEmpty from 'lodash.isempty';
-import { Method, Auth } from './interfaces';
+import { MethodArg, Auth } from './interfaces';
 
 /**
  *
@@ -14,11 +14,11 @@ export default class Validator {
    *
    *
    * @static
-   * @param {Method.GetUsers} parameters
+   * @param {MethodArg.GetUsers} parameters
    * @returns {void}
    * @memberof Validator
    */
-  static getUsers(parameters: Method.GetUsers): void {
+  static getUsers(parameters: MethodArg.GetUsers): void {
     if (isEmpty(parameters)) return;
     if (!(isString(parameters.app_user_id) && isString(parameters.oneup_user_id))) {
       throw new Error("Parameters 'app_user_id' and 'oneup_user_id' are required");
@@ -29,10 +29,10 @@ export default class Validator {
    *
    *
    * @static
-   * @param {Method.CreateUser} payload
+   * @param {MethodArg.CreateUser} payload
    * @memberof Validator
    */
-  static createUser(payload: Method.CreateUser): void {
+  static createUser(payload: MethodArg.CreateUser): void {
     if (isEmpty(payload) || !(isString(payload.app_user_id) && isBoolean(payload.active))) {
       throw new Error("Fields 'app_user_id' and 'active' are required");
     }
@@ -42,10 +42,10 @@ export default class Validator {
    *
    *
    * @static
-   * @param {Method.UpdateUser} payload
+   * @param {MethodArg.UpdateUser} payload
    * @memberof Validator
    */
-  static updateUser(payload: Method.UpdateUser): void {
+  static updateUser(payload: MethodArg.UpdateUser): void {
     if (
       isEmpty(payload) ||
       !(
@@ -62,10 +62,10 @@ export default class Validator {
    *
    *
    * @static
-   * @param {Method.GenerateUserAuthCode} payload
+   * @param {MethodArg.GenerateUserAuthCode} payload
    * @memberof Validator
    */
-  static generateUserAuthCode(payload: Method.GenerateUserAuthCode): void {
+  static generateUserAuthCode(payload: MethodArg.GenerateUserAuthCode): void {
     if (isEmpty(payload) || !(isString(payload.app_user_id))) {
       throw new Error("Field 'app_user_id'is required");
     }
