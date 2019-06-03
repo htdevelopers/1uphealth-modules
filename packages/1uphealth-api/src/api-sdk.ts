@@ -1,13 +1,14 @@
 // TODO: Handle 302 anauthorized redirection in all endpoints..
 // TODO: collect all endpoints to dict
+// TODO: validation using io-ts?
 
 import {
   Config,
-  Scope,
   Auth,
   HttpClientResponse,
   MethodArg,
-} from './interfaces';
+  Scope,
+} from './types/main';
 import HttpClient from './http-client';
 import Validator from './validator';
 
@@ -23,7 +24,7 @@ import Validator from './validator';
  * @implements {Scope.Connect}
  */
 export default class OneUpApiSDK
-  implements Config, Auth, Scope.UserManagement, Scope.UI, Scope.Connect {
+  implements Config, Auth, Scope.Connect, Scope.FHIR, Scope.UI, Scope.UserManagement {
   /**
    *
    *
@@ -98,7 +99,7 @@ export default class OneUpApiSDK
    * An array of user objects
    * @memberof OneUpApiSDK
    */
-  async getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse> {
+  public async getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse> {
     if (parameters !== undefined) {
       Validator.getUsers(parameters);
     }
@@ -126,7 +127,7 @@ export default class OneUpApiSDK
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
+  public async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
     Validator.createUser(payload);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
@@ -149,7 +150,7 @@ export default class OneUpApiSDK
    * Will return the new user object
    * @memberof OneUpApiSDK
    */
-  async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
+  public async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
     Validator.updateUser(payload);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
@@ -175,7 +176,9 @@ export default class OneUpApiSDK
    * which can be used to authenticate requests made on behalf of the user.
    * @memberof OneUpApiSDK
    */
-  async generateUserAuthCode(payload: MethodArg.GenerateUserAuthCode): Promise<HttpClientResponse> {
+  public async generateUserAuthCode(
+    payload: MethodArg.GenerateUserAuthCode,
+  ): Promise<HttpClientResponse> {
     Validator.generateUserAuthCode(payload);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
       qs: {
@@ -200,7 +203,7 @@ export default class OneUpApiSDK
    * this is to render this endpoint in an iframe within the developers own app.
    * @memberof OneUpApiSDK
    */
-  async getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
+  public async getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
     Validator.checkAccessToken(this.accessToken);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/marketplace`, {
       qs: {
@@ -229,7 +232,7 @@ export default class OneUpApiSDK
    * for more information on how a FHIR bundle is structured.
    * @memberof OneUpApiSDK
    */
-  async searchConnectProvider(
+  public async searchConnectProvider(
     { query: q }: MethodArg.SearchConnectProvider,
   ): Promise<HttpClientResponse> {
     Validator.checkAccessToken(this.accessToken);
@@ -253,7 +256,7 @@ export default class OneUpApiSDK
    * Returns a list of device types that can be used as sources.
    * @memberof OneUpApiSDK
    */
-  async getDevices(): Promise<HttpClientResponse> {
+  public async getDevices(): Promise<HttpClientResponse> {
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
       qs: {
         client_id: this.clientId,
@@ -273,7 +276,7 @@ export default class OneUpApiSDK
    * @returns {Promise<HttpClientResponse>}
    * @memberof OneUpApiSDK
    */
-  async getSupportedHealthSystems(): Promise<HttpClientResponse> {
+  public async getSupportedHealthSystems(): Promise<HttpClientResponse> {
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
       qs: {
         client_id: this.clientId,
@@ -281,4 +284,107 @@ export default class OneUpApiSDK
       },
     });
   }
+
+  /**
+   * **GET /fhir/{fhirVersion}/{resourceType}**
+   *
+   * Returns all matching FHIR resources for a resource type \
+   * See also: \
+   * FHIR versions and resources supported by 1upHealth
+   * https://1up.health/dev/reference/fhir-resources \
+   * The official HL7 FHIR docs
+   * https://www.hl7.org/fhir
+   *
+   * This endpoint receives authentication in the form of a http bearer authenitcation header.
+   *
+   * @private
+   * @param {MethodArg.GetFHIRResources} payload
+   * @returns {Promise<HttpClientResponse>}
+   * A FHIR Bundle containing all the resources that match the query,
+   * @memberof OneUpApiSDK
+   */
+  // TODO: unit tests
+  // TODO: input validation
+  public async getFHIRResources(
+    payload: MethodArg.GetFHIRResourcesDSTU2 | MethodArg.GetFHIRResourcesSTU3,
+  ): Promise<HttpClientResponse> {
+    Validator.checkAccessToken(this.accessToken);
+    const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
+    return this.httpClient.get(url, {
+      headers: {
+        ...this.httpClient.defaultOptions.headers,
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+      qs: {
+        ...payload.queryParams,
+      },
+    });
+  }
+
+  /**
+   * **POST /fhir/{fhirVersion}/{resourceType}**
+   *
+   * Can be used to create a FHIR resource with a given type. \
+   * See also: \
+   * FHIR versions and resources supported by 1upHealth
+   * https://1up.health/dev/reference/fhir-resources \
+   * The official HL7 FHIR docs
+   * https://www.hl7.org/fhir
+   *
+   * @param {(MethodArg.CreateFHIRResourceSTU3 | MethodArg.CreateFHIRResourceDSTU2)} payload
+   * @returns {Promise<HttpClientResponse>}
+   * A FHIR Resource containing all the attributes that were posted.
+   * @memberof OneUpApiSDK
+   */
+  // TODO: unit tests
+  // TODO: input validation
+  public async createFHIRResource(
+    payload: MethodArg.CreateFHIRResource,
+  ): Promise<HttpClientResponse> {
+    console.log('createFHIRResource');
+    Validator.checkAccessToken(this.accessToken);
+    console.log('this.accessToken', this.accessToken);
+    const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
+    return this.httpClient.post(url, {
+      headers: {
+        ...this.httpClient.defaultOptions.headers,
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+      body: {
+        ...payload.resource,
+      },
+    });
+  }
+
+  /**
+   * **GET /fhir/{fhirVersion}/Patient/{patientId}/$everything**
+   *
+   * This endpoint returns a list of all known FHIR resources for a given patient. \
+   * This is useful when transmitting batch data or getting the full patient history.
+   *
+   * @param {MethodArg.QueryFHIREverything} payload
+   * @returns {Promise<HttpClientResponse>}
+   * A FHIR Bundle containing all the resources that match the query
+   * @memberof OneUpApiSDK
+   */
+  // TODO: unit tests
+  // TODO: input validation
+  public async queryFHIREverything(
+    payload: MethodArg.QueryFHIREverything,
+  ): Promise<HttpClientResponse> {
+    Validator.checkAccessToken(this.accessToken);
+    const url =
+      `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/Patient/${payload.patientId}/$everything`;
+    return this.httpClient.get(url, {
+      headers: {
+        ...this.httpClient.defaultOptions.headers,
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+  }
 }
+
+const x = new OneUpApiSDK({
+  clientId: 'test',
+  clientSecret: 'test',
+});

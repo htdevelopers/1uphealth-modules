@@ -1,7 +1,7 @@
 import isString from 'lodash.isstring';
 import isBoolean from 'lodash.isboolean';
 import isEmpty from 'lodash.isempty';
-import { MethodArg, Auth } from './interfaces';
+import { MethodArg, Auth } from './types/main';
 
 /**
  *

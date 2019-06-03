@@ -2,10 +2,11 @@ import sinon from 'sinon';
 import * as typemoq from 'typemoq';
 import OneUpApiSDK from '../src/api-sdk';
 import HttpClient from '../src/http-client';
-import { HttpClientResponse, AppUserId, OneUpUserId } from '../dist/src/interfaces';
-import { UserActive, MethodArg } from '../src/interfaces';
+import { MethodArg, HttpClientResponse } from '../src/types/main';
 
 describe('api-sdk', () => {
+  const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
+
   it('can be initialized', () => {
     const oneUpSDK = new OneUpApiSDK({
       clientId: 'test',
@@ -19,7 +20,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return json response', async () => {
       const mock = {
@@ -27,7 +27,8 @@ describe('api-sdk', () => {
         body: JSON.stringify({ test: 1 }),
       };
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
-      expect(await sdkInstance.getUsers()).toEqual(mock);
+      const response = await sdkInstance.getUsers();
+      expect(response).toEqual(mock);
       stub.restore();
     });
 
@@ -62,7 +63,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return json response', async () => {
       const mock = {
@@ -70,7 +70,11 @@ describe('api-sdk', () => {
         body: JSON.stringify({ test: 1 }),
       };
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves(mock);
-      expect(await sdkInstance.createUser({ active: false, app_user_id: 'test' })).toEqual(mock);
+      const response = await sdkInstance.createUser({
+        active: false,
+        app_user_id: 'test',
+      });
+      expect(response).toEqual(mock);
       stub.restore();
     });
 
@@ -104,7 +108,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return json response', async () => {
       const mock = {
@@ -113,7 +116,9 @@ describe('api-sdk', () => {
       };
       const stub = sinon.stub(HttpClient.prototype, 'put').resolves(mock);
       expect(
-        await sdkInstance.updateUser({ active: false, app_user_id: 'test', oneup_user_id: 'test' }),
+        await sdkInstance.updateUser(
+          { active: false, app_user_id: 'test', oneup_user_id: 'test' },
+        ),
       ).toEqual(mock);
       stub.restore();
     });
@@ -148,7 +153,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return json response', async () => {
       const mock = {
@@ -191,7 +195,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return html response', async () => {
       sdkInstance.accessToken = 'test';
@@ -225,7 +228,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should throw error when accessToken is not provided', async () => {
       sdkInstance.accessToken = undefined;
@@ -258,7 +260,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return json response', async () => {
       const mock = {
@@ -277,7 +278,6 @@ describe('api-sdk', () => {
       clientId: 'test',
       clientSecret: 'test',
     });
-    const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
     it('should return json response', async () => {
       const mock = {
@@ -287,6 +287,64 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
       const response = await sdkInstance.getSupportedHealthSystems();
       expect(response).toEqual(mock);
+      stub.restore();
+    });
+  });
+
+  describe('createFHIRResource', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+
+    it('should return json response', async () => {
+      sdkInstance.accessToken = 'test';
+      const stub = sinon.stub(HttpClient.prototype, 'post').resolves({ ...responseMock });
+      const response = await sdkInstance.createFHIRResource({
+        fhirVersion: 'dstu2',
+        resource: {},
+        resourceType: 'AllergyIntolerance',
+      });
+      expect(response).toEqual({ ...responseMock });
+      stub.restore();
+    });
+  });
+
+  describe('getFHIRResources', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+
+    it('should return json response', async () => {
+      sdkInstance.accessToken = 'test';
+      const stub = sinon.stub(HttpClient.prototype, 'get').resolves({ ...responseMock });
+      const response = await sdkInstance.getFHIRResources({
+        fhirVersion: 'dstu2',
+        resourceType: 'AllergyIntolerance',
+        queryParams: {
+          test: 'test',
+        },
+      });
+      expect(response).toEqual({ ...responseMock });
+      stub.restore();
+    });
+  });
+
+  describe('queryFHIREverything', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+
+    it('should return json response', async () => {
+      sdkInstance.accessToken = 'test';
+      const stub = sinon.stub(HttpClient.prototype, 'get').resolves({ ...responseMock });
+      const response = await sdkInstance.queryFHIREverything({
+        fhirVersion: 'dstu2',
+        patientId: 'test',
+      });
+      expect(response).toEqual({ ...responseMock });
       stub.restore();
     });
   });
