@@ -303,7 +303,7 @@ export default class OneUpApiSDK
    * A FHIR Bundle containing all the resources that match the query,
    * @memberof OneUpApiSDK
    */
-  // TODO: unit tests
+  // TODO: typed response
   // TODO: input validation
   public async getFHIRResources(
     payload: MethodArg.GetFHIRResourcesDSTU2 | MethodArg.GetFHIRResourcesSTU3,
@@ -336,7 +336,7 @@ export default class OneUpApiSDK
    * A FHIR Resource containing all the attributes that were posted.
    * @memberof OneUpApiSDK
    */
-  // TODO: unit tests
+  // TODO: typed response
   // TODO: input validation
   public async createFHIRResource(
     payload: MethodArg.CreateFHIRResource,
@@ -367,7 +367,7 @@ export default class OneUpApiSDK
    * A FHIR Bundle containing all the resources that match the query
    * @memberof OneUpApiSDK
    */
-  // TODO: unit tests
+  // TODO: typed response
   // TODO: input validation
   public async queryFHIREverything(
     payload: MethodArg.QueryFHIREverything,
