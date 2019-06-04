@@ -33,6 +33,7 @@ class List extends React.Component<Props> {
     );
   }
 
+<<<<<<< HEAD
   public render(): JSX.Element {
     const { onClick } = this.props;
 
@@ -80,6 +81,43 @@ class List extends React.Component<Props> {
               </div>
             );
           })}
+=======
+  render() {
+    return (
+      <div className="list-container">
+        <div className="list-container__wrapper">
+          <div className="row">
+            <div className="row__logo">logo</div>
+            <div className="row__name">
+              <div className="row__name__icon">{this.returnHomeIcon()}</div>
+              <div>
+              Dr. Gorge Office
+                <span>XYZ Health System</span>
+              </div>
+            </div>
+            <div className="row__address">Baker Street 221B</div>
+            <div className="row__city">New York</div>
+            <div className="row__state">NY</div>
+            <div className="row__zipcode">10011</div>
+            <div className="row__action">Connected</div>
+          </div>
+
+          <div className="row">
+            <div className="row__logo">logo</div>
+            <div className="row__name">
+              <div className="row__name__icon">{this.returnHomeIcon()}</div>
+              <div>
+                Sam Smith Medicine Health
+                <span>ABC Health System</span>
+              </div>
+            </div>
+            <div className="row__address">Baker Street 221B</div>
+            <div className="row__city">New York</div>
+            <div className="row__state">NY</div>
+            <div className="row__zipcode">10011</div>
+            <div className="row__action">Connected</div>
+          </div>
+>>>>>>> 7e0b14c92b739d72fb5d6de1293c331e0e7f8b36
         </div>
       </div>
     );
