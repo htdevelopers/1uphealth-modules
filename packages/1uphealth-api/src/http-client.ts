@@ -97,7 +97,6 @@ export default class HttpClient {
   ): Promise<HttpClientResponse> {
     if (options && options.body && typeof options.body === 'object') {
       options.body = JSON.stringify(options.body);
-      console.log(options.body);
     }
     return new Promise((resolve, reject) => {
       request[method](

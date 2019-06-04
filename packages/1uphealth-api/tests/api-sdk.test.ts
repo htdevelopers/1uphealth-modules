@@ -348,4 +348,40 @@ describe('api-sdk', () => {
       stub.restore();
     });
   });
+
+  describe('grantPermissions', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+
+    it('should return json response', async () => {
+      sdkInstance.accessToken = 'test';
+      const stub = sinon.stub(HttpClient.prototype, 'put').resolves({ ...responseMock });
+      const response = await sdkInstance.grantPermissions({
+        fhirVersion: 'dstu2',
+        oneup_user_id: '123',
+      });
+      expect(response).toEqual({ ...responseMock });
+      stub.restore();
+    });
+  });
+
+  describe('revokePermissions', () => {
+    const sdkInstance = new OneUpApiSDK({
+      clientId: 'test',
+      clientSecret: 'test',
+    });
+
+    it('should return json response', async () => {
+      sdkInstance.accessToken = 'test';
+      const stub = sinon.stub(HttpClient.prototype, 'delete').resolves({ ...responseMock });
+      const response = await sdkInstance.revokePermissions({
+        fhirVersion: 'dstu2',
+        oneup_user_id: '123',
+      });
+      expect(response).toEqual({ ...responseMock });
+      stub.restore();
+    });
+  });
 });

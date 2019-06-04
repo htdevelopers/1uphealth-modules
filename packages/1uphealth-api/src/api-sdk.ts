@@ -1,5 +1,4 @@
-// TODO: Handle 302 anauthorized redirection in all endpoints..
-// TODO: collect all endpoints to dict
+// TODO: Handle 302 anauthorized redirection in all endpoints.
 // TODO: validation using io-ts?
 
 import {
@@ -303,7 +302,6 @@ export default class OneUpApiSDK
    * A FHIR Bundle containing all the resources that match the query,
    * @memberof OneUpApiSDK
    */
-  // TODO: typed response
   // TODO: input validation
   public async getFHIRResources(
     payload: MethodArg.GetFHIRResourcesDSTU2 | MethodArg.GetFHIRResourcesSTU3,
@@ -336,14 +334,11 @@ export default class OneUpApiSDK
    * A FHIR Resource containing all the attributes that were posted.
    * @memberof OneUpApiSDK
    */
-  // TODO: typed response
   // TODO: input validation
   public async createFHIRResource(
     payload: MethodArg.CreateFHIRResource,
   ): Promise<HttpClientResponse> {
-    console.log('createFHIRResource');
     Validator.checkAccessToken(this.accessToken);
-    console.log('this.accessToken', this.accessToken);
     const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
     return this.httpClient.post(url, {
       headers: {
@@ -367,7 +362,6 @@ export default class OneUpApiSDK
    * A FHIR Bundle containing all the resources that match the query
    * @memberof OneUpApiSDK
    */
-  // TODO: typed response
   // TODO: input validation
   public async queryFHIREverything(
     payload: MethodArg.QueryFHIREverything,
@@ -382,9 +376,57 @@ export default class OneUpApiSDK
       },
     });
   }
-}
 
-const x = new OneUpApiSDK({
-  clientId: 'test',
-  clientSecret: 'test',
-});
+  /**
+   * **PUT /fhir/dstu2/Patient/patientid/_permission/{oneUpUserId}**
+   *
+   * When making a request to the 1upHealth FHIR API using a user's **access_token**, \
+   * the resources returned will be scoped to only the resources that the user has \
+   * permissions to view. However, sometimes when building an app you might want to \
+   * support the ability for users to grant access to other users to see certain records. \
+   * This endpoint allows you to grant access to resources to arbitrary users.
+   *
+   * @param {MethodArg.GrantPermissions} payload
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof OneUpApiSDK
+   */
+  public async grantPermissions(
+    payload: MethodArg.GrantPermissions,
+  ): Promise<HttpClientResponse> {
+    Validator.checkAccessToken(this.accessToken);
+    const { fhirVersion, oneup_user_id } = payload;
+    const url =
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneup_user_id}`;
+    return this.httpClient.put(url, {
+      headers: {
+        ...this.httpClient.defaultOptions.headers,
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+  }
+
+  /**
+   * **DELETE /fhir/dstu2/Patient/patientid/_permission/{oneUpUserId}**
+   *
+   * This endpoint allows you to remove permissions that have been granted to users to see \
+   * other users' FHIR resources.
+   *
+   * @param {MethodArg.RevokePermissions} payload
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof OneUpApiSDK
+   */
+  public async revokePermissions(
+    payload: MethodArg.RevokePermissions,
+  ): Promise<HttpClientResponse> {
+    Validator.checkAccessToken(this.accessToken);
+    const { fhirVersion, oneup_user_id } = payload;
+    const url =
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneup_user_id}`;
+    return this.httpClient.delete(url, {
+      headers: {
+        ...this.httpClient.defaultOptions.headers,
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+  }
+}

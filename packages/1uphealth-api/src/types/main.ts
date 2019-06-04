@@ -28,6 +28,8 @@ export namespace MethodArg {
       resource: FHIR_STU3.Resource;
     };
   export interface QueryFHIREverything extends PatientId, FHIRVersion {}
+  export interface GrantPermissions extends OneUpUserId, FHIRVersion {}
+  export interface RevokePermissions extends OneUpUserId, FHIRVersion {}
 }
 
 export interface HttpClientResponse {
@@ -63,6 +65,8 @@ export namespace Scope {
     ): Promise<HttpClientResponse>;
     createFHIRResource(payload: MethodArg.CreateFHIRResource): Promise<HttpClientResponse>;
     queryFHIREverything(payload: MethodArg.QueryFHIREverything): Promise<HttpClientResponse>;
+    grantPermissions(payload: MethodArg.GrantPermissions): Promise<HttpClientResponse>;
+    revokePermissions(payload: MethodArg.RevokePermissions): Promise<HttpClientResponse>;
   }
 }
 
