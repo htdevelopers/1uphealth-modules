@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@1uphealth-temp/api@./packages/1uphealth-api":
+  version "0.1.0"
+  dependencies:
+    lodash.isboolean "^3.0.3"
+    lodash.isempty "^4.4.0"
+    lodash.isstring "^4.0.1"
+    request "^2.88.0"
+
 "@babel/code-frame@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"
