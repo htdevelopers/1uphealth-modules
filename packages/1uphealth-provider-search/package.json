@@ -8,8 +8,7 @@
     "access": "public"
   },
   "files": [
-    "dist/index.js",
-    "dist/index.d.ts"
+    "dist"
   ],
   "scripts": {
     "prepare": "tsc && sass src/index.scss dist/index.css",
