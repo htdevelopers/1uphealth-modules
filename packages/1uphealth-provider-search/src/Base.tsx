@@ -1,6 +1,9 @@
 import * as React from 'react';
+// import Api from '@1uphealth-temp/api';
 
-interface Props {}
+interface Props {
+  accessToken: string;
+}
 
 interface State {}
 
@@ -10,11 +13,7 @@ class Base extends React.Component<Props, State> {
   }
 
   render() {
-    return (
-      <>
-        {this.props.children}
-      </>
-    );
+    return <div className="provider-search-container">{this.props.children}</div>;
   }
 }
 
