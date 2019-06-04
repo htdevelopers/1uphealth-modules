@@ -34,7 +34,7 @@
   "dependencies": {
     "io-ts": "^1.8.6",
     "prop-types-ts": "^0.6.2",
-    "@1uphealth-temp/api": "./packages/1uphealth-api"
+    "@1uphealth-temp/api": "0.*"
   },
   "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223",
   "engines": {
