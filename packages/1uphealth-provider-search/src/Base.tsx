@@ -10,7 +10,7 @@ class Base extends React.Component<Props, State> {
   }
 
   render() {
-    return <>{this.props.children}</>;
+    return <div className="provider-search-container">{this.props.children}</div>;
   }
 }
 

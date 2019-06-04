@@ -16,10 +16,10 @@ function App() {
           inputProps={{
             onChange: (e) => console.log(e.target.value),
             onBlur: () => console.log('BLUR!'),
-            onFocus: () => console.log('FOCUS!'),
+            onFocus: () => console.log('FOCUS!')
           }}
         />
-        <ProviderSearch.List />
+        <ProviderSearch.List onClick={(e) => console.log(e.target)} />
       </ProviderSearch.Base>
     </div>
   );

@@ -1,7 +1,11 @@
 import * as React from 'react';
 
-class List extends React.Component {
-  constructor(props: {}) {
+interface Props {
+  onClick: any;
+}
+
+class List extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
   }
 
@@ -29,41 +33,53 @@ class List extends React.Component {
     );
   }
 
-  render() {
+  public render(): JSX.Element {
+    const { onClick } = this.props;
+
+    const data = [
+      {
+        logo: '-',
+        name: 'Dr. Gorge Office',
+        system: 'XYZ Health System',
+        address: 'Baker Street 221B',
+        city: 'New York',
+        state: 'NY',
+        zipcode: '10011',
+        action: 'Connected',
+      },
+      {
+        logo: '-',
+        name: 'Sam Smith Medicine Health',
+        system: 'ABC Health System',
+        address: 'Baker Street 221B',
+        city: 'New York',
+        state: 'NY',
+        zipcode: '10011',
+        action: 'Connected',
+      },
+    ];
     return (
       <div className="list-container">
         <div className="list-container__wrapper">
-          <div className="row">
-            <div className="row__logo">logo</div>
-            <div className="row__name">
-              <div className="row__name__icon">{this.returnHomeIcon()}</div>
-              <div>
-              Dr. Gorge Office
-                <span>XYZ Health System</span>
+          {data.map((r) => {
+            return (
+              <div className="row" onClick={onClick}>
+                <div className="row__logo">{r.logo}</div>
+                <div className="row__name">
+                  <div className="row__name__icon">{this.returnHomeIcon()}</div>
+                  <div>
+                    {r.name}
+                    <span>{r.system}</span>
+                  </div>
+                </div>
+                <div className="row__address">{r.address}</div>
+                <div className="row__city">{r.city}</div>
+                <div className="row__state">{r.state}</div>
+                <div className="row__zipcode">{r.zipcode}</div>
+                <div className="row__action">{r.action}</div>
               </div>
-            </div>
-            <div className="row__address">Baker Street 221B</div>
-            <div className="row__city">New York</div>
-            <div className="row__state">NY</div>
-            <div className="row__zipcode">10011</div>
-            <div className="row__action">Connected</div>
-          </div>
-
-          <div className="row">
-            <div className="row__logo">logo</div>
-            <div className="row__name">
-              <div className="row__name__icon">{this.returnHomeIcon()}</div>
-              <div>
-                Sam Smith Medicine Health
-                <span>ABC Health System</span>
-              </div>
-            </div>
-            <div className="row__address">Baker Street 221B</div>
-            <div className="row__city">New York</div>
-            <div className="row__state">NY</div>
-            <div className="row__zipcode">10011</div>
-            <div className="row__action">Connected</div>
-          </div>
+            );
+          })}
         </div>
       </div>
     );
