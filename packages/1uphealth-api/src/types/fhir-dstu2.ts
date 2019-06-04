@@ -5,7 +5,7 @@
 
 /* tslint:disable */
 
-declare namespace FHIR_DSTU2 {
+export declare namespace FHIR_DSTU2 {
   type id = string;
   /**
    * String of characters used to identify a name or a resource

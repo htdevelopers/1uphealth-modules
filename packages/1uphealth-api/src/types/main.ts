@@ -1,5 +1,8 @@
 import request from 'request';
 
+import { FHIR_DSTU2 } from './fhir-dstu2';
+import { FHIR_STU3 } from './fhir-stu3';
+
 export type HttpClientMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 export namespace MethodArg {
