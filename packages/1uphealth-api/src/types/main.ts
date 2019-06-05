@@ -84,19 +84,11 @@ export interface Auth {
 }
 
 export interface OneUpUserId {
-  oneup_user_id: string;
+  oneupUserId: string;
 }
 
 export interface AppUserId {
-  app_user_id: string;
-}
-
-export interface ClientId {
-  oneup_user_id: string;
-}
-
-export interface ClientSecret {
-  oneup_user_id: string;
+  appUserId: string;
 }
 
 export interface UserActive {

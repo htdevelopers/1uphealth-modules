@@ -79,12 +79,10 @@ export default class ApiSDK
    * @param {Config} config
    * @memberof ApiSDK
    */
-  // TODO: validate payload for Node.js
   public constructor(config?: Config) {
     if (config) {
       this.clientId = config['clientId'];
       this.clientSecret = config['clientSecret'];
-      Validator.clientKeys(this.clientKeys);
     }
     this.httpClient = new HttpClient();
   }
@@ -96,8 +94,8 @@ export default class ApiSDK
    * with the option of filtering by specific users
    *
    * @param {MethodArg.GetUsers} [parameters]
-   * **oneup_user_id** — string \
-   * **app_user_id** — string
+   * **oneupUserId** — string \
+   * **appUserId** — string
    * @returns {Promise<HttpClientResponse>}
    * An array of user objects
    * @memberof ApiSDK
@@ -113,8 +111,8 @@ export default class ApiSDK
         client_secret: this.clientSecret,
         ...(parameters
           ? {
-            oneup_user_id: parameters.oneup_user_id,
-            app_user_id: parameters.app_user_id,
+            oneup_user_id: parameters.oneupUserId,
+            app_user_id: parameters.appUserId,
           }
           : {}),
       },
@@ -138,7 +136,7 @@ export default class ApiSDK
       qs: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        app_user_id: payload.app_user_id,
+        app_user_id: payload.appUserId,
         active: payload.active,
       },
     });
@@ -162,8 +160,8 @@ export default class ApiSDK
       qs: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        app_user_id: payload.app_user_id,
-        oneup_user_id: payload.oneup_user_id,
+        app_user_id: payload.appUserId,
+        oneup_user_id: payload.oneupUserId,
         active: payload.active,
       },
     });
@@ -191,7 +189,7 @@ export default class ApiSDK
       qs: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        app_user_id: payload.app_user_id,
+        app_user_id: payload.appUserId,
       },
     });
   }
@@ -241,7 +239,7 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async searchConnectProvider(
-    { query: q }: MethodArg.SearchConnectProvider,
+    payload: MethodArg.SearchConnectProvider,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/provider/search`, {
@@ -250,7 +248,7 @@ export default class ApiSDK
         Authorization: `Bearer ${this.accessToken}`,
       },
       qs: {
-        q,
+        q: payload.query,
       },
     });
   }
@@ -405,9 +403,9 @@ export default class ApiSDK
     payload: MethodArg.GrantPermissions,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    const { fhirVersion, oneup_user_id } = payload;
+    const { fhirVersion, oneupUserId } = payload;
     const url =
-      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneup_user_id}`;
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneupUserId}`;
     return this.httpClient.put(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,
@@ -430,9 +428,9 @@ export default class ApiSDK
     payload: MethodArg.RevokePermissions,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    const { fhirVersion, oneup_user_id } = payload;
+    const { fhirVersion, oneupUserId } = payload;
     const url =
-      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneup_user_id}`;
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneupUserId}`;
     return this.httpClient.delete(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,

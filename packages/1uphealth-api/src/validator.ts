@@ -20,8 +20,8 @@ export default class Validator {
    */
   static getUsersPayload(parameters: MethodArg.GetUsers): void {
     if (isEmpty(parameters)) return;
-    if (!(isString(parameters.app_user_id) && isString(parameters.oneup_user_id))) {
-      throw new Error("Parameters 'app_user_id' and 'oneup_user_id' are required");
+    if (!(isString(parameters.appUserId) && isString(parameters.oneupUserId))) {
+      throw new Error("Parameters 'appUserId' and 'oneupUserId' are required");
     }
   }
 
@@ -33,8 +33,8 @@ export default class Validator {
    * @memberof Validator
    */
   static createUserPayload(payload: MethodArg.CreateUser): void {
-    if (isEmpty(payload) || !(isString(payload.app_user_id) && isBoolean(payload.active))) {
-      throw new Error("Fields 'app_user_id' and 'active' are required");
+    if (isEmpty(payload) || !(isString(payload.appUserId) && isBoolean(payload.active))) {
+      throw new Error("Fields 'appUserId' and 'active' are required");
     }
   }
 
@@ -49,12 +49,12 @@ export default class Validator {
     if (
       isEmpty(payload) ||
       !(
-        isString(payload.app_user_id) &&
-        isString(payload.oneup_user_id) &&
+        isString(payload.appUserId) &&
+        isString(payload.oneupUserId) &&
         isBoolean(payload.active)
       )
     ) {
-      throw new Error("Fields 'app_user_id', 'active' and 'oneup_user_id' are required");
+      throw new Error("Fields 'appUserId', 'active' and 'oneupUserId' are required");
     }
   }
 
@@ -66,8 +66,8 @@ export default class Validator {
    * @memberof Validator
    */
   static generateUserAuthCodePayload(payload: MethodArg.GenerateUserAuthCode): void {
-    if (isEmpty(payload) || !(isString(payload.app_user_id))) {
-      throw new Error("Field 'app_user_id'is required");
+    if (isEmpty(payload) || !(isString(payload.appUserId))) {
+      throw new Error("Field 'appUserId'is required");
     }
   }
 

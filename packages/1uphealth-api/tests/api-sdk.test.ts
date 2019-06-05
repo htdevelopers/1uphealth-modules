@@ -39,8 +39,8 @@ describe('api-sdk', () => {
       const argArr = [
         { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object },
         typemoq.Mock.ofType<MethodArg.GetUsers>().object,
-        { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object, app_user_id: '' },
-        { app_user_id: '', oneup_user_id: '' },
+        { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object, appUserId: '' },
+        { appUserId: '', oneupUserId: '' },
       ];
 
       await Promise.all(
@@ -72,7 +72,7 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves(mock);
       const response = await sdkInstance.createUser({
         active: false,
-        app_user_id: 'test',
+        appUserId: 'test',
       });
       expect(response).toEqual(mock);
       stub.restore();
@@ -84,8 +84,8 @@ describe('api-sdk', () => {
 
       const argArr = [
         typemoq.Mock.ofType<MethodArg.CreateUser>().object,
-        { ...typemoq.Mock.ofType<MethodArg.CreateUser>().object, app_user_id: '' },
-        { active: true, app_user_id: '' },
+        { ...typemoq.Mock.ofType<MethodArg.CreateUser>().object, appUserId: '' },
+        { active: true, appUserId: '' },
       ];
 
       await Promise.all(
@@ -117,7 +117,7 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'put').resolves(mock);
       expect(
         await sdkInstance.updateUser(
-          { active: false, app_user_id: 'test', oneup_user_id: 'test' },
+          { active: false, appUserId: 'test', oneupUserId: 'test' },
         ),
       ).toEqual(mock);
       stub.restore();
@@ -129,8 +129,8 @@ describe('api-sdk', () => {
 
       const argArr = [
         typemoq.Mock.ofType<MethodArg.UpdateUser>().object,
-        { ...typemoq.Mock.ofType<MethodArg.UpdateUser>().object, app_user_id: '' },
-        { active: true, app_user_id: '', oneup_user_id: '' },
+        { ...typemoq.Mock.ofType<MethodArg.UpdateUser>().object, appUserId: '' },
+        { active: true, appUserId: '', oneupUserId: '' },
       ];
 
       await Promise.all(
@@ -161,7 +161,7 @@ describe('api-sdk', () => {
       };
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves(mock);
       expect(
-        await sdkInstance.generateUserAuthCode({ app_user_id: 'test' }),
+        await sdkInstance.generateUserAuthCode({ appUserId: 'test' }),
       ).toEqual(mock);
       stub.restore();
     });
@@ -172,7 +172,7 @@ describe('api-sdk', () => {
 
       const argArr = [
         typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object,
-        { ...typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object, app_user_id: '' },
+        { ...typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object, appUserId: '' },
       ];
 
       await Promise.all(
@@ -360,7 +360,7 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'put').resolves({ ...responseMock });
       const response = await sdkInstance.grantPermissions({
         fhirVersion: 'dstu2',
-        oneup_user_id: '123',
+        oneupUserId: '123',
       });
       expect(response).toEqual({ ...responseMock });
       stub.restore();
@@ -378,7 +378,7 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'delete').resolves({ ...responseMock });
       const response = await sdkInstance.revokePermissions({
         fhirVersion: 'dstu2',
-        oneup_user_id: '123',
+        oneupUserId: '123',
       });
       expect(response).toEqual({ ...responseMock });
       stub.restore();
