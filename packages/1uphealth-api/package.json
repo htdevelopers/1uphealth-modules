@@ -1,6 +1,6 @@
 {
   "name": "@1uphealth-temp/api",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "description...",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -33,10 +33,10 @@
     "nock": "^10.0.6"
   },
   "dependencies": {
+    "axios": "^0.15.0",
     "lodash.isboolean": "^3.0.3",
     "lodash.isempty": "^4.4.0",
-    "lodash.isstring": "^4.0.1",
-    "axios": "^0.15.0"
+    "lodash.isstring": "^4.0.1"
   },
   "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
 }
