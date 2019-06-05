@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import * as typemoq from 'typemoq';
-import OneUpApiSDK from '../src/api-sdk';
+import ApiSDK from '../src/api-sdk';
 import HttpClient from '../src/http-client';
 import { MethodArg, HttpClientResponse } from '../src/types/main';
 
@@ -8,15 +8,15 @@ describe('api-sdk', () => {
   const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
 
   it('can be initialized', () => {
-    const oneUpSDK = new OneUpApiSDK({
+    const oneUpSDK = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
-    expect(oneUpSDK).toBeInstanceOf(OneUpApiSDK);
+    expect(oneUpSDK).toBeInstanceOf(ApiSDK);
   });
 
   describe('getUsers', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -59,7 +59,7 @@ describe('api-sdk', () => {
   });
 
   describe('createUser', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -104,7 +104,7 @@ describe('api-sdk', () => {
   });
 
   describe('updateUser', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -149,7 +149,7 @@ describe('api-sdk', () => {
   });
 
   describe('generateUserAuthCode', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -191,7 +191,7 @@ describe('api-sdk', () => {
   });
 
   describe('getHealthSystemPickerIFrame', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -224,7 +224,7 @@ describe('api-sdk', () => {
   });
 
   describe('searchConnectProvider', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -256,7 +256,7 @@ describe('api-sdk', () => {
   });
 
   describe('getDevices', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -274,7 +274,7 @@ describe('api-sdk', () => {
   });
 
   describe('getSupportedHealthSystems', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -292,7 +292,7 @@ describe('api-sdk', () => {
   });
 
   describe('createFHIRResource', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -311,7 +311,7 @@ describe('api-sdk', () => {
   });
 
   describe('getFHIRResources', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -332,7 +332,7 @@ describe('api-sdk', () => {
   });
 
   describe('queryFHIREverything', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -350,7 +350,7 @@ describe('api-sdk', () => {
   });
 
   describe('grantPermissions', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });
@@ -368,7 +368,7 @@ describe('api-sdk', () => {
   });
 
   describe('revokePermissions', () => {
-    const sdkInstance = new OneUpApiSDK({
+    const sdkInstance = new ApiSDK({
       clientId: 'test',
       clientSecret: 'test',
     });

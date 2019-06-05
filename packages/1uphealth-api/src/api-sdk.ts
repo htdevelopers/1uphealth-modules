@@ -15,20 +15,20 @@ import Validator from './validator';
  *
  *
  * @export
- * @class OneUpApiSDK
+ * @class ApiSDK
  * @implements {Config}
  * @implements {Auth}
  * @implements {Scope.UserManagement}
  * @implements {Scope.UI}
  * @implements {Scope.Connect}
  */
-export default class OneUpApiSDK
+export default class ApiSDK
   implements Config, Auth, Scope.Connect, Scope.FHIR, Scope.UI, Scope.UserManagement {
   /**
    *
    *
    * @type {Config['clientId']}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public clientId: Config['clientId'];
 
@@ -36,7 +36,7 @@ export default class OneUpApiSDK
    *
    *
    * @type {Config['clientSecret']}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public clientSecret: Config['clientSecret'];
 
@@ -44,7 +44,7 @@ export default class OneUpApiSDK
    *
    *
    * @type {string}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public API_URL_BASE: string = 'https://api.1up.health';
 
@@ -52,7 +52,7 @@ export default class OneUpApiSDK
    *
    *
    * @type {Auth['accessToken']}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public accessToken: Auth['accessToken'];
 
@@ -60,7 +60,7 @@ export default class OneUpApiSDK
    *
    *
    * @type {Auth['refreshToken']}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public refreshToken: Auth['refreshToken'];
 
@@ -69,16 +69,17 @@ export default class OneUpApiSDK
    *
    * @private
    * @type {HttpClient}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   private httpClient: HttpClient;
 
   /**
-   * Creates an instance of OneUpApiSDK.
+   * Creates an instance of ApiSDK.
    *
    * @param {Config} config
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
+  // TODO: validate payload for Node.js
   public constructor(config: Config) {
     this.clientId = config['clientId'];
     this.clientSecret = config['clientSecret'];
@@ -96,7 +97,7 @@ export default class OneUpApiSDK
    * **app_user_id** — string
    * @returns {Promise<HttpClientResponse>}
    * An array of user objects
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse> {
     if (parameters !== undefined) {
@@ -124,7 +125,7 @@ export default class OneUpApiSDK
    *
    * @param {MethodArg.CreateUser} payload
    * @returns {Promise<HttpClientResponse>}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
     Validator.createUser(payload);
@@ -147,7 +148,7 @@ export default class OneUpApiSDK
    * @param {MethodArg.UpdateUser} payload
    * @returns {Promise<HttpClientResponse>}
    * Will return the new user object
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
     Validator.updateUser(payload);
@@ -173,7 +174,7 @@ export default class OneUpApiSDK
    * @returns {Promise<HttpClientResponse>}
    * Returns an access token and a refresh token,
    * which can be used to authenticate requests made on behalf of the user.
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async generateUserAuthCode(
     payload: MethodArg.GenerateUserAuthCode,
@@ -200,7 +201,7 @@ export default class OneUpApiSDK
    * This endpoint returns an html page and inline css that, when rendered, results in a UI for \
    * selecting which health care system the user would like to connect. The most common use of \
    * this is to render this endpoint in an iframe within the developers own app.
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
     Validator.checkAccessToken(this.accessToken);
@@ -229,7 +230,7 @@ export default class OneUpApiSDK
    * can authorize sharing of their medical data. \
    * See the official hl7 FHIR docs (https://www.hl7.org/fhir/bundle.html) \
    * for more information on how a FHIR bundle is structured.
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async searchConnectProvider(
     { query: q }: MethodArg.SearchConnectProvider,
@@ -253,7 +254,7 @@ export default class OneUpApiSDK
    *
    * @returns {Promise<HttpClientResponse>}
    * Returns a list of device types that can be used as sources.
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async getDevices(): Promise<HttpClientResponse> {
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
@@ -273,7 +274,7 @@ export default class OneUpApiSDK
    * using the Provider Search endpoint instead.
    *
    * @returns {Promise<HttpClientResponse>}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async getSupportedHealthSystems(): Promise<HttpClientResponse> {
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
@@ -300,7 +301,7 @@ export default class OneUpApiSDK
    * @param {MethodArg.GetFHIRResources} payload
    * @returns {Promise<HttpClientResponse>}
    * A FHIR Bundle containing all the resources that match the query,
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   // TODO: input validation
   public async getFHIRResources(
@@ -332,7 +333,7 @@ export default class OneUpApiSDK
    * @param {(MethodArg.CreateFHIRResourceSTU3 | MethodArg.CreateFHIRResourceDSTU2)} payload
    * @returns {Promise<HttpClientResponse>}
    * A FHIR Resource containing all the attributes that were posted.
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   // TODO: input validation
   public async createFHIRResource(
@@ -360,7 +361,7 @@ export default class OneUpApiSDK
    * @param {MethodArg.QueryFHIREverything} payload
    * @returns {Promise<HttpClientResponse>}
    * A FHIR Bundle containing all the resources that match the query
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   // TODO: input validation
   public async queryFHIREverything(
@@ -388,7 +389,7 @@ export default class OneUpApiSDK
    *
    * @param {MethodArg.GrantPermissions} payload
    * @returns {Promise<HttpClientResponse>}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async grantPermissions(
     payload: MethodArg.GrantPermissions,
@@ -413,7 +414,7 @@ export default class OneUpApiSDK
    *
    * @param {MethodArg.RevokePermissions} payload
    * @returns {Promise<HttpClientResponse>}
-   * @memberof OneUpApiSDK
+   * @memberof ApiSDK
    */
   public async revokePermissions(
     payload: MethodArg.RevokePermissions,

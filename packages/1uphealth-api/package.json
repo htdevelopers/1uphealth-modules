@@ -25,10 +25,6 @@
   ],
   "license": "MIT",
   "homepage": "https://1up.health/",
-  "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
-  },
   "devDependencies": {
     "@types/lodash.isboolean": "^3.0.6",
     "@types/lodash.isempty": "^4.4.6",
