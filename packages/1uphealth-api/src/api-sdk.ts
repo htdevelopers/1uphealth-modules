@@ -84,7 +84,7 @@ export default class ApiSDK
     if (config) {
       this.clientId = config['clientId'];
       this.clientSecret = config['clientSecret'];
-      Validator.clientKeys(this.clientId, this.clientSecret);
+      Validator.clientKeys(this.clientKeys);
     }
     this.httpClient = new HttpClient();
   }
@@ -106,7 +106,7 @@ export default class ApiSDK
     if (parameters !== undefined) {
       Validator.getUsersPayload(parameters);
     }
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
@@ -133,7 +133,7 @@ export default class ApiSDK
    */
   public async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
     Validator.createUserPayload(payload);
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
@@ -157,7 +157,7 @@ export default class ApiSDK
    */
   public async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
     Validator.updateUserPayload(payload);
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
@@ -186,7 +186,7 @@ export default class ApiSDK
     payload: MethodArg.GenerateUserAuthCode,
   ): Promise<HttpClientResponse> {
     Validator.generateUserAuthCodePayload(payload);
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
       qs: {
         client_id: this.clientId,
@@ -212,7 +212,7 @@ export default class ApiSDK
    */
   public async getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/marketplace`, {
       qs: {
         client_id: this.clientId,
@@ -265,7 +265,7 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async getDevices(): Promise<HttpClientResponse> {
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
       qs: {
         client_id: this.clientId,
@@ -286,7 +286,7 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async getSupportedHealthSystems(): Promise<HttpClientResponse> {
-    Validator.clientKeys(this.clientId, this.clientSecret);
+    Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
       qs: {
         client_id: this.clientId,
@@ -439,5 +439,26 @@ export default class ApiSDK
         Authorization: `Bearer ${this.accessToken}`,
       },
     });
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   * @private
+   * @type {{
+   *     clientId: Config['clientId'],
+   *     clientSecret: Config['clientSecret'],
+   *   }}
+   * @memberof ApiSDK
+   */
+  private get clientKeys(): {
+    clientId: Config['clientId'],
+    clientSecret: Config['clientSecret'],
+  } {
+    return {
+      clientId: this.clientId,
+      clientSecret: this.clientSecret,
+    };
   }
 }

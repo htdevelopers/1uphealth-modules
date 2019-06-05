@@ -384,4 +384,17 @@ describe('api-sdk', () => {
       stub.restore();
     });
   });
+
+  describe('clientKeys', () => {
+    it('should return obj of client keys', () => {
+      const api = new ApiSDK({
+        clientId: 'test',
+        clientSecret: 'test1',
+      });
+      expect(api['clientKeys']).toStrictEqual({
+        clientSecret: 'test1',
+        clientId: 'test',
+      });
+    });
+  });
 });

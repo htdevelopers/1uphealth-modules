@@ -80,7 +80,7 @@ export default class Validator {
    */
   static accessToken(accessToken: Auth['accessToken']): void {
     if (isEmpty(accessToken) || !isString(accessToken)) {
-      throw new Error('Not Authorized: Access token is not provided or is invalid');
+      throw new Error('Access token is not provided or is invalid');
     }
   }
 
@@ -92,12 +92,16 @@ export default class Validator {
    * @param {Config['clientSecret']} clientSecret
    * @memberof Validator
    */
-  static clientKeys(clientId: Config['clientId'], clientSecret: Config['clientSecret']): void {
+  static clientKeys(
+    { clientId, clientSecret }: {
+      clientId: Config['clientId'],
+      clientSecret: Config['clientSecret'],
+    }): void {
     if (isEmpty(clientSecret) || !isString(clientSecret)) {
-      throw new Error('Not Authorized: Client Secret is not provided or is invalid');
+      throw new Error('Client Secret is not provided or is invalid');
     }
     if (isEmpty(clientId) || !isString(clientId)) {
-      throw new Error('Not Authorized: Client Id is not provided or is invalid');
+      throw new Error('Client Id is not provided or is invalid');
     }
   }
 }
