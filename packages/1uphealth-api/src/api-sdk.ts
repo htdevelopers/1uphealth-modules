@@ -84,6 +84,7 @@ export default class ApiSDK
     if (config) {
       this.clientId = config['clientId'];
       this.clientSecret = config['clientSecret'];
+      Validator.clientKeys(this.clientId, this.clientSecret);
     }
     this.httpClient = new HttpClient();
   }
@@ -103,8 +104,9 @@ export default class ApiSDK
    */
   public async getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse> {
     if (parameters !== undefined) {
-      Validator.getUsers(parameters);
+      Validator.getUsersPayload(parameters);
     }
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.get(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
@@ -130,7 +132,8 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
-    Validator.createUser(payload);
+    Validator.createUserPayload(payload);
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
@@ -153,7 +156,8 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
-    Validator.updateUser(payload);
+    Validator.updateUserPayload(payload);
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
       qs: {
         client_id: this.clientId,
@@ -181,7 +185,8 @@ export default class ApiSDK
   public async generateUserAuthCode(
     payload: MethodArg.GenerateUserAuthCode,
   ): Promise<HttpClientResponse> {
-    Validator.generateUserAuthCode(payload);
+    Validator.generateUserAuthCodePayload(payload);
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
       qs: {
         client_id: this.clientId,
@@ -206,7 +211,8 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/marketplace`, {
       qs: {
         client_id: this.clientId,
@@ -237,7 +243,7 @@ export default class ApiSDK
   public async searchConnectProvider(
     { query: q }: MethodArg.SearchConnectProvider,
   ): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/provider/search`, {
       headers: {
         ...this.httpClient.defaultOptions.headers,
@@ -259,6 +265,7 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async getDevices(): Promise<HttpClientResponse> {
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
       qs: {
         client_id: this.clientId,
@@ -279,6 +286,7 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async getSupportedHealthSystems(): Promise<HttpClientResponse> {
+    Validator.clientKeys(this.clientId, this.clientSecret);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
       qs: {
         client_id: this.clientId,
@@ -309,7 +317,7 @@ export default class ApiSDK
   public async getFHIRResources(
     payload: MethodArg.GetFHIRResourcesDSTU2 | MethodArg.GetFHIRResourcesSTU3,
   ): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
     const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
     return this.httpClient.get(url, {
       headers: {
@@ -341,7 +349,7 @@ export default class ApiSDK
   public async createFHIRResource(
     payload: MethodArg.CreateFHIRResource,
   ): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
     const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
     return this.httpClient.post(url, {
       headers: {
@@ -369,7 +377,7 @@ export default class ApiSDK
   public async queryFHIREverything(
     payload: MethodArg.QueryFHIREverything,
   ): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
     const url =
       `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/Patient/${payload.patientId}/$everything`;
     return this.httpClient.get(url, {
@@ -396,7 +404,7 @@ export default class ApiSDK
   public async grantPermissions(
     payload: MethodArg.GrantPermissions,
   ): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
     const { fhirVersion, oneup_user_id } = payload;
     const url =
       `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneup_user_id}`;
@@ -421,7 +429,7 @@ export default class ApiSDK
   public async revokePermissions(
     payload: MethodArg.RevokePermissions,
   ): Promise<HttpClientResponse> {
-    Validator.checkAccessToken(this.accessToken);
+    Validator.accessToken(this.accessToken);
     const { fhirVersion, oneup_user_id } = payload;
     const url =
       `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneup_user_id}`;
