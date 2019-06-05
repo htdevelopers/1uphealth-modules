@@ -80,9 +80,11 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   // TODO: validate payload for Node.js
-  public constructor(config: Config) {
-    this.clientId = config['clientId'];
-    this.clientSecret = config['clientSecret'];
+  public constructor(config?: Config) {
+    if (config) {
+      this.clientId = config['clientId'];
+      this.clientSecret = config['clientSecret'];
+    }
     this.httpClient = new HttpClient();
   }
 

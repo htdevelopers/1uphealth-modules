@@ -74,8 +74,8 @@ export namespace Scope {
 }
 
 export interface Config {
-  clientId: string;
-  clientSecret: string;
+  clientId?: string;
+  clientSecret?: string;
 }
 
 export interface Auth {
