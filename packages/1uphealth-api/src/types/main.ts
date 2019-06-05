@@ -1,4 +1,4 @@
-import request from 'request';
+import { AxiosRequestConfig } from 'axios';
 
 import { FHIR_DSTU2 } from './fhir-dstu2';
 import { FHIR_STU3 } from './fhir-stu3';
@@ -36,13 +36,12 @@ export namespace MethodArg {
 }
 
 export interface HttpClientResponse {
-  success: boolean;
   status: number;
   statusMessage: string;
-  body: any;
+  data: any;
 }
 
-export interface HttpClientOptions extends request.CoreOptions {}
+export interface HttpClientOptions extends AxiosRequestConfig {}
 
 export namespace Scope {
   export interface UserManagement {

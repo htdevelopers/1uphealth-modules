@@ -1,5 +1,6 @@
 import { HttpClientOptions, HttpClientMethod, HttpClientResponse } from './types/main';
-import request from 'request';
+// import request from 'request';
+import axios, { AxiosResponse } from 'axios';
 
 /**
  * HttpClient is helper abstraction over the request library.
@@ -80,50 +81,27 @@ export default class HttpClient {
     return this.executeRequest('delete', uri, options);
   }
 
-  /**
-   *
-   *
-   * @private
-   * @param {HttpClientMethod} method
-   * @param {string} uri
-   * @param {HttpClientOptions} [options]
-   * @returns {Promise<HttpClientResponse>}
-   * @memberof HttpClient
-   */
-  private executeRequest(
+  private async executeRequest(
     method: HttpClientMethod,
     uri: string,
     options?: HttpClientOptions,
   ): Promise<HttpClientResponse> {
-    if (options && options.body && typeof options.body === 'object') {
-      options.body = JSON.stringify(options.body);
-    }
-    return new Promise((resolve, reject) => {
-      request[method](
+    try {
+      const response = await axios[method](
         uri,
         Object.assign({}, this.defaultOptions, options),
-        (error, response, body) => {
-          return error ? reject(error) : resolve(this.buildResponse(response, body));
-        },
       );
-    });
+      return this.buildResponse(response);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  /**
-   *
-   *
-   * @private
-   * @param {request.Response} response
-   * @param {*} body
-   * @returns {HttpClientResponse}
-   * @memberof HttpClient
-   */
-  private buildResponse(response: request.Response, body: any): HttpClientResponse {
+  private buildResponse(response: AxiosResponse): HttpClientResponse {
     return {
-      body,
-      status: response.statusCode,
-      statusMessage: response.statusMessage,
-      success: response.statusCode < 400,
+      data: response.data,
+      status: response.status,
+      statusMessage: response.statusText,
     };
   }
 }

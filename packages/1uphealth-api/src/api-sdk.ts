@@ -106,7 +106,7 @@ export default class ApiSDK
     }
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/user-management/v1/user`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         ...(parameters
@@ -133,7 +133,7 @@ export default class ApiSDK
     Validator.createUserPayload(payload);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         app_user_id: payload.appUserId,
@@ -157,7 +157,7 @@ export default class ApiSDK
     Validator.updateUserPayload(payload);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         app_user_id: payload.appUserId,
@@ -186,7 +186,7 @@ export default class ApiSDK
     Validator.generateUserAuthCodePayload(payload);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         app_user_id: payload.appUserId,
@@ -212,7 +212,7 @@ export default class ApiSDK
     Validator.accessToken(this.accessToken);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/marketplace`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         access_token: this.accessToken,
       },
@@ -247,7 +247,7 @@ export default class ApiSDK
         ...this.httpClient.defaultOptions.headers,
         Authorization: `Bearer ${this.accessToken}`,
       },
-      qs: {
+      params: {
         q: payload.query,
       },
     });
@@ -265,7 +265,7 @@ export default class ApiSDK
   public async getDevices(): Promise<HttpClientResponse> {
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
       },
@@ -286,7 +286,7 @@ export default class ApiSDK
   public async getSupportedHealthSystems(): Promise<HttpClientResponse> {
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
-      qs: {
+      params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
       },
@@ -322,7 +322,7 @@ export default class ApiSDK
         ...this.httpClient.defaultOptions.headers,
         Authorization: `Bearer ${this.accessToken}`,
       },
-      qs: {
+      params: {
         ...payload.queryParams,
       },
     });
@@ -354,7 +354,7 @@ export default class ApiSDK
         ...this.httpClient.defaultOptions.headers,
         Authorization: `Bearer ${this.accessToken}`,
       },
-      body: {
+      data: {
         ...payload.resource,
       },
     });
