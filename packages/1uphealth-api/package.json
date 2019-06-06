@@ -11,10 +11,11 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "tsc && yarn doc",
     "pretest": "tsc",
     "watch": "tsc -w",
-    "test": "jest"
+    "test": "jest",
+    "doc": "typedoc --theme minimal --out doc --mode modules --target es5 ./src"
   },
   "keywords": [
     "1uphealth",
