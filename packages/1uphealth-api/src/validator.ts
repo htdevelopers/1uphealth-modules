@@ -20,13 +20,11 @@ export default class Validator {
    */
   static getUsersPayload(oneUpUserId?: OneUpUserId, appUserId?: AppUserId): void {
     if (oneUpUserId === undefined && appUserId === undefined) return;
-    if (
-        !isString(appUserId) ||
-        !isString(oneUpUserId) ||
-        isEmpty(appUserId) ||
-        isEmpty(oneUpUserId)
-    ) {
-      throw new Error("Parameters 'appUserId' and 'oneUpUserId' are required");
+    if (oneUpUserId && !isString(oneUpUserId)) {
+      throw new Error("Parameter 'oneUpUserId' is incorrect");
+    }
+    if (appUserId && !isString(appUserId)) {
+      throw new Error("Parameter 'appUserId' is incorrect");
     }
   }
 

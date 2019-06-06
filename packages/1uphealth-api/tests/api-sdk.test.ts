@@ -37,9 +37,9 @@ describe('api-sdk', () => {
       let errorCount = 0;
 
       try {
-        await sdkInstance.getUsers();
-        await sdkInstance.getUsers(undefined, '');
         await sdkInstance.getUsers('', '');
+        // @ts-ignore
+        await sdkInstance.getUsers(1);
       } catch (_e) {
         errorCount += 1;
       }
@@ -73,7 +73,6 @@ describe('api-sdk', () => {
       try {
         // @ts-ignore
         await sdkInstance.createUser('', true);
-        // await sdkInstance.createUser(undefined, undefined);
         // @ts-ignore
         await sdkInstance.createUser('', undefined);
       } catch (_e) {

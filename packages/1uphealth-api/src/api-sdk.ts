@@ -22,11 +22,6 @@ import { FHIR_STU3 } from './types/fhir-stu3';
  *
  * @export
  * @class ApiSDK
- * @implements {Config}
- * @implements {Auth}
- * @implements {Scope.UserManagement}
- * @implements {Scope.UI}
- * @implements {Scope.Connect}
  */
 export default class ApiSDK {
   public clientId?: string;
@@ -87,12 +82,8 @@ export default class ApiSDK {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        ...(oneUpUserId && appUserId
-          ? {
-            oneup_user_id: oneUpUserId,
-            app_user_id: appUserId,
-          }
-          : {}),
+        ...(oneUpUserId ? { oneup_user_id: oneUpUserId } : {}),
+        ...(appUserId ? { app_user_id: appUserId } : {}),
       },
     });
   }
@@ -434,6 +425,80 @@ export default class ApiSDK {
         Authorization: `Bearer ${this.accessToken}`,
       },
     });
+  }
+
+  /**
+   * **POST https://api.1up.health/fhir/oauth2/token**
+   *
+   * grant_type=authorization_code
+   *
+   * This method generates new access token for given **auth_code**
+   *
+   * @param {string} authCode
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof ApiSDK
+   */  
+  // TODO: unit tests
+  public generateOAuth2Token(authCode: string): Promise<HttpClientResponse> {
+    Validator.clientKeys(this.clientKeys);
+    return this.httpClient.post(`${this.API_URL_BASE}/fhit/oauth2/token`, {
+      params: {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: 'authorization_code',
+        code: authCode,
+      },
+    });
+  }
+
+  /**
+   * **POST https://api.1up.health/fhir/oauth2/token**
+   *
+   * grant_type=refresh_token
+   *
+   * This method refresh access token for given **refresh_token** parameter
+   *
+   * @param {string} refreshToken
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof ApiSDK
+   */
+  // TODO: unit tests
+  public refreshOAuth2Token(refreshToken: string): Promise<HttpClientResponse> {
+    Validator.clientKeys(this.clientKeys);
+    return this.httpClient.post(`${this.API_URL_BASE}/fhit/oauth2/token`, {
+      params: {
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+      },
+    });
+  }
+
+  /**
+   * This method generate **access_token** for given **app_user_id**. \
+   * If there is no user with given **app_user_id**, it creates new one.
+   *
+   * @param {AppUserId} appUserId
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof ApiSDK
+   */
+  // TODO: unit tests
+  public async authenticate(appUserId: AppUserId): Promise<HttpClientResponse> {
+    Validator.clientKeys(this.clientKeys);
+    const users = await this.getUsers(undefined, appUserId);
+    let authCode: string;
+    if (users.entry[0]) {
+      const generatedAuthCode = await this.generateUserAuthCode(appUserId);
+      authCode = generatedAuthCode.code;
+    } else {
+      const user = await this.createUser(appUserId, true);
+      authCode = user.code;
+    }
+    const response = await this.generateOAuth2Token(authCode);
+    this.accessToken = response.access_token;
+    this.refreshToken = response.refresh_token;
+    return response;
   }
 
   /**
