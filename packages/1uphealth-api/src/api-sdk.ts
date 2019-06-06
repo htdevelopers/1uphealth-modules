@@ -441,7 +441,7 @@ export default class ApiSDK {
   // TODO: unit tests
   public generateOAuth2Token(authCode: string): Promise<HttpClientResponse> {
     Validator.clientKeys(this.clientKeys);
-    return this.httpClient.post(`${this.API_URL_BASE}/fhit/oauth2/token`, {
+    return this.httpClient.post(`${this.API_URL_BASE}/fhir/oauth2/token`, {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
@@ -465,7 +465,7 @@ export default class ApiSDK {
   // TODO: unit tests
   public refreshOAuth2Token(refreshToken: string): Promise<HttpClientResponse> {
     Validator.clientKeys(this.clientKeys);
-    return this.httpClient.post(`${this.API_URL_BASE}/fhit/oauth2/token`, {
+    return this.httpClient.post(`${this.API_URL_BASE}/fhir/oauth2/token`, {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
