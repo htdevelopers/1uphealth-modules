@@ -11,11 +11,11 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "tsc && yarn docs",
     "pretest": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "doc": "typedoc --theme minimal --out doc --mode modules --target es5 ./src"
+    "docs": "documentation readme dist/** -f md --resolve node -s @1uphealth/api --markdown-toc false"
   },
   "keywords": [
     "1uphealth",
