@@ -15,7 +15,7 @@
     "pretest": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "docs": "documentation readme dist/** -f md --resolve node -s @1uphealth/api --markdown-toc false"
+    "docs": "tsc --target esw2019 --outDir ./dist/docs && documentation readme dist/es6/src/api-sdk.js -f md --resolve node -s @1uphealth/api --markdown-toc false && rm -rf ./dist/docs"
   },
   "keywords": [
     "1uphealth",
