@@ -164,11 +164,6 @@ export default class ApiSDK {
   ): Promise<HttpClientResponse> {
     Validator.generateUserAuthCodePayload(appUserId);
     Validator.clientKeys(this.clientKeys);
-    console.log('generateUserAuthCode', appUserId, {
-      client_id: this.clientId,
-      client_secret: this.clientSecret,
-      app_user_id: appUserId,
-    });
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
       params: {
         client_id: this.clientId,
@@ -490,25 +485,17 @@ export default class ApiSDK {
    */
   // TODO: unit tests
   public async authenticate(appUserId: AppUserId): Promise<HttpClientResponse> {
-    console.log('authenticate start', appUserId);
     Validator.clientKeys(this.clientKeys);
     const users = await this.getUsers(undefined, appUserId);
-    console.log('getUsers', users);
     let authCode: string;
-    console.log('user exists', users.entry[0]);
     if (users.entry[0] !== undefined) {
-      console.log('before generating auth code');
       const generatedAuthCode = await this.generateUserAuthCode(appUserId);
-      console.log('generated auth code', generatedAuthCode.code);
       authCode = generatedAuthCode.code;
     } else {
-      console.log('before creating user');
       const user = await this.createUser(appUserId, true);
-      console.log('created user', user);
       authCode = user.code;
     }
     const response = await this.generateOAuth2Token(authCode);
-    console.log('generate oAuth2Token', response);
     this.accessToken = response.access_token;
     this.refreshToken = response.refresh_token;
     return response;
