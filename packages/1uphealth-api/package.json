@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "tsc && yarn doc",
+    "prepare": "tsc",
     "pretest": "tsc",
     "watch": "tsc -w",
     "test": "jest",
