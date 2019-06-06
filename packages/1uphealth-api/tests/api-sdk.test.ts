@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import * as typemoq from 'typemoq';
 import ApiSDK from '../src/api-sdk';
 import HttpClient from '../src/http-client';
-import { MethodArg, HttpClientResponse } from '../src/types/main';
+import { HttpClientResponse } from '../src/types/main';
 
 describe('api-sdk', () => {
   const responseMock = typemoq.Mock.ofType<HttpClientResponse>().object;
@@ -36,22 +36,13 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves({ ...responseMock });
       let errorCount = 0;
 
-      const argArr = [
-        { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object },
-        typemoq.Mock.ofType<MethodArg.GetUsers>().object,
-        { ...typemoq.Mock.ofType<MethodArg.GetUsers>().object, appUserId: '' },
-        { appUserId: '', oneupUserId: '' },
-      ];
-
-      await Promise.all(
-        argArr.map(async (arg) => {
-          try {
-            await sdkInstance.getUsers(arg);
-          } catch (_e) {
-            errorCount += 1;
-          }
-        }),
-      );
+      try {
+        await sdkInstance.getUsers();
+        await sdkInstance.getUsers(undefined, '');
+        await sdkInstance.getUsers('', '');
+      } catch (_e) {
+        errorCount += 1;
+      }
 
       stub.restore();
       expect(errorCount).toEqual(1);
@@ -70,10 +61,7 @@ describe('api-sdk', () => {
         body: JSON.stringify({ test: 1 }),
       };
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves(mock);
-      const response = await sdkInstance.createUser({
-        active: false,
-        appUserId: 'test',
-      });
+      const response = await sdkInstance.createUser('test', false);
       expect(response).toEqual(mock);
       stub.restore();
     });
@@ -82,24 +70,18 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves({ ...responseMock });
       let errorCount = 0;
 
-      const argArr = [
-        typemoq.Mock.ofType<MethodArg.CreateUser>().object,
-        { ...typemoq.Mock.ofType<MethodArg.CreateUser>().object, appUserId: '' },
-        { active: true, appUserId: '' },
-      ];
-
-      await Promise.all(
-        argArr.map(async (arg) => {
-          try {
-            await sdkInstance.createUser(arg);
-          } catch (_e) {
-            errorCount += 1;
-          }
-        }),
-      );
+      try {
+        // @ts-ignore
+        await sdkInstance.createUser('', true);
+        // await sdkInstance.createUser(undefined, undefined);
+        // @ts-ignore
+        await sdkInstance.createUser('', undefined);
+      } catch (_e) {
+        errorCount += 1;
+      }
 
       stub.restore();
-      expect(errorCount).toEqual(2);
+      expect(errorCount).toEqual(1);
     });
   });
 
@@ -115,11 +97,8 @@ describe('api-sdk', () => {
         body: JSON.stringify({ test: 1 }),
       };
       const stub = sinon.stub(HttpClient.prototype, 'put').resolves(mock);
-      expect(
-        await sdkInstance.updateUser(
-          { active: false, appUserId: 'test', oneupUserId: 'test' },
-        ),
-      ).toEqual(mock);
+      const response = await sdkInstance.updateUser('test', 'test', false);
+      expect(response).toEqual(mock);
       stub.restore();
     });
 
@@ -127,24 +106,16 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'put').resolves({ ...responseMock });
       let errorCount = 0;
 
-      const argArr = [
-        typemoq.Mock.ofType<MethodArg.UpdateUser>().object,
-        { ...typemoq.Mock.ofType<MethodArg.UpdateUser>().object, appUserId: '' },
-        { active: true, appUserId: '', oneupUserId: '' },
-      ];
-
-      await Promise.all(
-        argArr.map(async (arg) => {
-          try {
-            await sdkInstance.updateUser(arg);
-          } catch (_e) {
-            errorCount += 1;
-          }
-        }),
-      );
+      try {
+        await sdkInstance.updateUser('', '', true);
+        // @ts-ignore
+        await sdkInstance.updateUser('', undefined, undefined);
+      } catch (_e) {
+        errorCount += 1;
+      }
 
       stub.restore();
-      expect(errorCount).toEqual(2);
+      expect(errorCount).toEqual(1);
     });
   });
 
@@ -160,9 +131,8 @@ describe('api-sdk', () => {
         body: JSON.stringify({ test: 1 }),
       };
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves(mock);
-      expect(
-        await sdkInstance.generateUserAuthCode({ appUserId: 'test' }),
-      ).toEqual(mock);
+      const response = await sdkInstance.generateUserAuthCode('test');
+      expect(response).toEqual(mock);
       stub.restore();
     });
 
@@ -170,20 +140,13 @@ describe('api-sdk', () => {
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves({ ...responseMock });
       let errorCount = 0;
 
-      const argArr = [
-        typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object,
-        { ...typemoq.Mock.ofType<MethodArg.GenerateUserAuthCode>().object, appUserId: '' },
-      ];
-
-      await Promise.all(
-        argArr.map(async (arg) => {
-          try {
-            await sdkInstance.generateUserAuthCode(arg);
-          } catch (_e) {
-            errorCount += 1;
-          }
-        }),
-      );
+      try {
+        // @ts-ignore
+        await sdkInstance.generateUserAuthCode(undefined);
+        await sdkInstance.generateUserAuthCode('');
+      } catch (_e) {
+        errorCount += 1;
+      }
 
       stub.restore();
       expect(errorCount).toEqual(1);
@@ -234,7 +197,7 @@ describe('api-sdk', () => {
       let error = 0;
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves(responseMock);
       try {
-        await sdkInstance.searchConnectProvider({ query: 'john' });
+        await sdkInstance.searchConnectProvider('john');
       } catch (e) {
         error += 1;
       }
@@ -249,7 +212,7 @@ describe('api-sdk', () => {
         body: JSON.stringify({}),
       };
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves(mock);
-      const response = await sdkInstance.searchConnectProvider({ query: 'john' });
+      const response = await sdkInstance.searchConnectProvider('john');
       expect(response).toEqual(mock);
       stub.restore();
     });
@@ -300,11 +263,7 @@ describe('api-sdk', () => {
     it('should return json response', async () => {
       sdkInstance.accessToken = 'test';
       const stub = sinon.stub(HttpClient.prototype, 'post').resolves({ ...responseMock });
-      const response = await sdkInstance.createFHIRResource({
-        fhirVersion: 'dstu2',
-        resource: {},
-        resourceType: 'AllergyIntolerance',
-      });
+      const response = await sdkInstance.createFHIRResource('dstu2', 'AllergyIntolerance', {});
       expect(response).toEqual({ ...responseMock });
       stub.restore();
     });
@@ -319,13 +278,13 @@ describe('api-sdk', () => {
     it('should return json response', async () => {
       sdkInstance.accessToken = 'test';
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves({ ...responseMock });
-      const response = await sdkInstance.getFHIRResources({
-        fhirVersion: 'dstu2',
-        resourceType: 'AllergyIntolerance',
-        queryParams: {
+      const response = await sdkInstance.getFHIRResources(
+        'dstu2',
+        'AllergyIntolerance',
+        {
           test: 'test',
         },
-      });
+      );
       expect(response).toEqual({ ...responseMock });
       stub.restore();
     });
@@ -340,10 +299,7 @@ describe('api-sdk', () => {
     it('should return json response', async () => {
       sdkInstance.accessToken = 'test';
       const stub = sinon.stub(HttpClient.prototype, 'get').resolves({ ...responseMock });
-      const response = await sdkInstance.queryFHIREverything({
-        fhirVersion: 'dstu2',
-        patientId: 'test',
-      });
+      const response = await sdkInstance.queryFHIREverything('test', 'dstu2');
       expect(response).toEqual({ ...responseMock });
       stub.restore();
     });
@@ -358,10 +314,7 @@ describe('api-sdk', () => {
     it('should return json response', async () => {
       sdkInstance.accessToken = 'test';
       const stub = sinon.stub(HttpClient.prototype, 'put').resolves({ ...responseMock });
-      const response = await sdkInstance.grantPermissions({
-        fhirVersion: 'dstu2',
-        oneupUserId: '123',
-      });
+      const response = await sdkInstance.grantPermissions('123', 'dstu2');
       expect(response).toEqual({ ...responseMock });
       stub.restore();
     });
@@ -376,10 +329,7 @@ describe('api-sdk', () => {
     it('should return json response', async () => {
       sdkInstance.accessToken = 'test';
       const stub = sinon.stub(HttpClient.prototype, 'delete').resolves({ ...responseMock });
-      const response = await sdkInstance.revokePermissions({
-        fhirVersion: 'dstu2',
-        oneupUserId: '123',
-      });
+      const response = await sdkInstance.revokePermissions('123', 'dstu2');
       expect(response).toEqual({ ...responseMock });
       stub.restore();
     });
@@ -406,10 +356,7 @@ describe('api-sdk', () => {
       });
       let error = 0;
       try {
-        await api.getUsers({
-          appUserId: '',
-          oneupUserId: '',
-        });
+        await api.getUsers();
       } catch (e) {
         error += 1;
       }

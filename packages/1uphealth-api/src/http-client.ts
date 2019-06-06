@@ -81,6 +81,16 @@ export default class HttpClient {
     return this.executeRequest('delete', uri, options);
   }
 
+  /**
+   *
+   *
+   * @private
+   * @param {HttpClientMethod} method
+   * @param {string} uri
+   * @param {HttpClientOptions} [options]
+   * @returns {Promise<HttpClientResponse>}
+   * @memberof HttpClient
+   */
   private async executeRequest(
     method: HttpClientMethod,
     uri: string,

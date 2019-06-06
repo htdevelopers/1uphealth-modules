@@ -2,14 +2,20 @@
 // TODO: validation using io-ts?
 
 import {
-  Config,
-  Auth,
   HttpClientResponse,
-  MethodArg,
-  Scope,
+  OneUpUserId,
+  AppUserId,
+  UserActive,
+  Query,
+  PatientId,
+  FHIRVersion,
+  QueryParams,
+  Config,
 } from './types/main';
 import HttpClient from './http-client';
 import Validator from './validator';
+import { FHIR_DSTU2 } from './types/fhir-dstu2';
+import { FHIR_STU3 } from './types/fhir-stu3';
 
 /**
  *
@@ -22,23 +28,11 @@ import Validator from './validator';
  * @implements {Scope.UI}
  * @implements {Scope.Connect}
  */
-export default class ApiSDK
-  implements Config, Auth, Scope.Connect, Scope.FHIR, Scope.UI, Scope.UserManagement {
-  /**
-   *
-   *
-   * @type {Config['clientId']}
-   * @memberof ApiSDK
-   */
-  public clientId: Config['clientId'];
-
-  /**
-   *
-   *
-   * @type {Config['clientSecret']}
-   * @memberof ApiSDK
-   */
-  public clientSecret: Config['clientSecret'];
+export default class ApiSDK {
+  public clientId?: string;
+  public clientSecret?: string;
+  public accessToken?: string;
+  public refreshToken?: string;
 
   /**
    *
@@ -47,22 +41,6 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public API_URL_BASE: string = 'https://api.1up.health';
-
-  /**
-   *
-   *
-   * @type {Auth['accessToken']}
-   * @memberof ApiSDK
-   */
-  public accessToken: Auth['accessToken'];
-
-  /**
-   *
-   *
-   * @type {Auth['refreshToken']}
-   * @memberof ApiSDK
-   */
-  public refreshToken: Auth['refreshToken'];
 
   /**
    * Http client, abstraction over 'request' library
@@ -93,26 +71,26 @@ export default class ApiSDK
    * Get the list of all the users that exist inside your 1up Developer Application,
    * with the option of filtering by specific users
    *
-   * @param {MethodArg.GetUsers} [parameters]
-   * **oneupUserId** — string \
-   * **appUserId** — string
+   * @param {OneUpUserId} [oneUpUserId]
+   * @param {AppUserId} [appUserId]
    * @returns {Promise<HttpClientResponse>}
    * An array of user objects
    * @memberof ApiSDK
    */
-  public async getUsers(parameters?: MethodArg.GetUsers): Promise<HttpClientResponse> {
-    if (parameters !== undefined) {
-      Validator.getUsersPayload(parameters);
-    }
+  public async getUsers(
+    oneUpUserId?: OneUpUserId,
+    appUserId?: AppUserId,
+  ): Promise<HttpClientResponse> {
+    Validator.getUsersPayload(oneUpUserId, appUserId);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/user-management/v1/user`, {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        ...(parameters
+        ...(oneUpUserId && appUserId
           ? {
-            oneup_user_id: parameters.oneupUserId,
-            app_user_id: parameters.appUserId,
+            oneup_user_id: oneUpUserId,
+            app_user_id: appUserId,
           }
           : {}),
       },
@@ -125,19 +103,23 @@ export default class ApiSDK
    * Will cause a user to be created with the attributes passed in the request body. \
    * The request won't fail if the user already exists but rather will return the user data but with
    *
-   * @param {MethodArg.CreateUser} payload
+   * @param {AppUserId} appUserId
+   * @param {UserActive} userActive
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
-  public async createUser(payload: MethodArg.CreateUser): Promise<HttpClientResponse> {
-    Validator.createUserPayload(payload);
+  public async createUser(
+    appUserId: AppUserId,
+    userActive: UserActive,
+  ): Promise<HttpClientResponse> {
+    Validator.createUserPayload(appUserId, userActive);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user`, {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        app_user_id: payload.appUserId,
-        active: payload.active,
+        app_user_id: appUserId,
+        active: userActive,
       },
     });
   }
@@ -148,21 +130,27 @@ export default class ApiSDK
    * Can be used to modify an existing user object. It is possible to modify the **app_user_id**,
    * but the **oneup_user_id** is assigned when the user is created and cannot be changed.
    *
-   * @param {MethodArg.UpdateUser} payload
+   * @param {AppUserId} appUserId
+   * @param {OneUpUserId} oneUpUserId
+   * @param {UserActive} userActive
    * @returns {Promise<HttpClientResponse>}
    * Will return the new user object
    * @memberof ApiSDK
    */
-  public async updateUser(payload: MethodArg.UpdateUser): Promise<HttpClientResponse> {
-    Validator.updateUserPayload(payload);
+  public async updateUser(
+    appUserId: AppUserId,
+    oneUpUserId: OneUpUserId,
+    userActive: UserActive,
+  ): Promise<HttpClientResponse> {
+    Validator.updateUserPayload(appUserId, oneUpUserId, userActive);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.put(`${this.API_URL_BASE}/user-management/v1/user`, {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        app_user_id: payload.appUserId,
-        oneup_user_id: payload.oneupUserId,
-        active: payload.active,
+        app_user_id: appUserId,
+        oneup_user_id: oneUpUserId,
+        active: userActive,
       },
     });
   }
@@ -174,22 +162,22 @@ export default class ApiSDK
    * Note that this endpoint should not be called in a browser context because \
    * it would require exposing your app's secret key to users.
    *
-   * @param {MethodArg.GenerateUserAuthCode} payload
+   * @param {AppUserId} appUserId
    * @returns {Promise<HttpClientResponse>}
    * Returns an access token and a refresh token,
    * which can be used to authenticate requests made on behalf of the user.
    * @memberof ApiSDK
    */
   public async generateUserAuthCode(
-    payload: MethodArg.GenerateUserAuthCode,
+    appUserId: AppUserId,
   ): Promise<HttpClientResponse> {
-    Validator.generateUserAuthCodePayload(payload);
+    Validator.generateUserAuthCodePayload(appUserId);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.post(`${this.API_URL_BASE}/user-management/v1/user/auth-code`, {
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        app_user_id: payload.appUserId,
+        app_user_id: appUserId,
       },
     });
   }
@@ -225,7 +213,7 @@ export default class ApiSDK
    * Used to run a text search on health systems, often for the purpose of allowing the user \
    * to find their health system's authorization portal.
    *
-   * @param {MethodArg.SearchConnectProvider}
+   * @param {Query} query
    * { query: string; } \
    * This is how you specify the text to search for. \
    * It can be a doctor's name, clinic, hospital, or address.
@@ -239,7 +227,7 @@ export default class ApiSDK
    * @memberof ApiSDK
    */
   public async searchConnectProvider(
-    payload: MethodArg.SearchConnectProvider,
+    query: Query,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/provider/search`, {
@@ -248,7 +236,7 @@ export default class ApiSDK
         Authorization: `Bearer ${this.accessToken}`,
       },
       params: {
-        q: payload.query,
+        q: query,
       },
     });
   }
@@ -305,25 +293,28 @@ export default class ApiSDK
    *
    * This endpoint receives authentication in the form of a http bearer authenitcation header.
    *
-   * @private
-   * @param {MethodArg.GetFHIRResources} payload
+   * @public
+   * @param {FHIRVersion} fhirVersion
+   * @param {(FHIR_DSTU2.ResourceTypeStr | FHIR_STU3.ResourceTypeStr)} resourceType
+   * @param {QueryParams} queryParams
    * @returns {Promise<HttpClientResponse>}
    * A FHIR Bundle containing all the resources that match the query,
    * @memberof ApiSDK
    */
-  // TODO: input validation
   public async getFHIRResources(
-    payload: MethodArg.GetFHIRResourcesDSTU2 | MethodArg.GetFHIRResourcesSTU3,
+    fhirVersion: FHIRVersion,
+    resourceType: FHIR_DSTU2.ResourceTypeStr | FHIR_STU3.ResourceTypeStr,
+    queryParams: QueryParams,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
+    const url = `${this.API_URL_BASE}/fhir/${fhirVersion}/${resourceType}`;
     return this.httpClient.get(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,
         Authorization: `Bearer ${this.accessToken}`,
       },
       params: {
-        ...payload.queryParams,
+        ...queryParams,
       },
     });
   }
@@ -338,24 +329,27 @@ export default class ApiSDK
    * The official HL7 FHIR docs
    * https://www.hl7.org/fhir
    *
-   * @param {(MethodArg.CreateFHIRResourceSTU3 | MethodArg.CreateFHIRResourceDSTU2)} payload
+   * @param {FHIRVersion} fhirVersion
+   * @param {(FHIR_DSTU2.ResourceTypeStr | FHIR_STU3.ResourceTypeStr)} resourceType
+   * @param {(FHIR_DSTU2.Resource | FHIR_STU3.Resource)} resource
    * @returns {Promise<HttpClientResponse>}
    * A FHIR Resource containing all the attributes that were posted.
    * @memberof ApiSDK
    */
-  // TODO: input validation
   public async createFHIRResource(
-    payload: MethodArg.CreateFHIRResource,
+    fhirVersion: FHIRVersion,
+    resourceType: FHIR_DSTU2.ResourceTypeStr | FHIR_STU3.ResourceTypeStr,
+    resource: FHIR_DSTU2.Resource | FHIR_STU3.Resource,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    const url = `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/${payload.resourceType}`;
+    const url = `${this.API_URL_BASE}/fhir/${fhirVersion}/${resourceType}`;
     return this.httpClient.post(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,
         Authorization: `Bearer ${this.accessToken}`,
       },
       data: {
-        ...payload.resource,
+        ...resource,
       },
     });
   }
@@ -366,18 +360,19 @@ export default class ApiSDK
    * This endpoint returns a list of all known FHIR resources for a given patient. \
    * This is useful when transmitting batch data or getting the full patient history.
    *
-   * @param {MethodArg.QueryFHIREverything} payload
+   * @param {PatientId} patientId
+   * @param {FHIRVersion} fhirVersion
    * @returns {Promise<HttpClientResponse>}
    * A FHIR Bundle containing all the resources that match the query
    * @memberof ApiSDK
    */
-  // TODO: input validation
   public async queryFHIREverything(
-    payload: MethodArg.QueryFHIREverything,
+    patientId: PatientId,
+    fhirVersion: FHIRVersion,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
     const url =
-      `${this.API_URL_BASE}/fhir/${payload.fhirVersion}/Patient/${payload.patientId}/$everything`;
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/${patientId}/$everything`;
     return this.httpClient.get(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,
@@ -395,17 +390,18 @@ export default class ApiSDK
    * support the ability for users to grant access to other users to see certain records. \
    * This endpoint allows you to grant access to resources to arbitrary users.
    *
-   * @param {MethodArg.GrantPermissions} payload
+   * @param {OneUpUserId} oneUpUserId
+   * @param {FHIRVersion} fhirVersion
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
   public async grantPermissions(
-    payload: MethodArg.GrantPermissions,
+    oneUpUserId: OneUpUserId,
+    fhirVersion: FHIRVersion,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    const { fhirVersion, oneupUserId } = payload;
     const url =
-      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneupUserId}`;
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneUpUserId}`;
     return this.httpClient.put(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,
@@ -420,17 +416,18 @@ export default class ApiSDK
    * This endpoint allows you to remove permissions that have been granted to users to see \
    * other users' FHIR resources.
    *
-   * @param {MethodArg.RevokePermissions} payload
+   * @param {OneUpUserId} oneUpUserId
+   * @param {FHIRVersion} fhirVersion
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
   public async revokePermissions(
-    payload: MethodArg.RevokePermissions,
+    oneUpUserId: OneUpUserId,
+    fhirVersion: FHIRVersion,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
-    const { fhirVersion, oneupUserId } = payload;
     const url =
-      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneupUserId}`;
+      `${this.API_URL_BASE}/fhir/${fhirVersion}/Patient/patientid/_permission/${oneUpUserId}`;
     return this.httpClient.delete(url, {
       headers: {
         ...this.httpClient.defaultOptions.headers,

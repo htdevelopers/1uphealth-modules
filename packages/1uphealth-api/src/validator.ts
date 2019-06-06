@@ -1,7 +1,7 @@
 import isString from 'lodash.isstring';
 import isBoolean from 'lodash.isboolean';
 import isEmpty from 'lodash.isempty';
-import { MethodArg, Auth, Config } from './types/main';
+import { Auth, Config, OneUpUserId, AppUserId, UserActive } from './types/main';
 
 /**
  *
@@ -14,47 +14,58 @@ export default class Validator {
    *
    *
    * @static
-   * @param {MethodArg.GetUsers} parameters
-   * @returns {void}
+   * @param {OneUpUserId} [oneUpUserId]
+   * @param {AppUserId} [appUserId]
    * @memberof Validator
    */
-  static getUsersPayload(parameters: MethodArg.GetUsers): void {
-    if (isEmpty(parameters)) return;
-    if (!(isString(parameters.appUserId) && isString(parameters.oneupUserId))) {
-      throw new Error("Parameters 'appUserId' and 'oneupUserId' are required");
-    }
-  }
-
-  /**
-   *
-   *
-   * @static
-   * @param {MethodArg.CreateUser} payload
-   * @memberof Validator
-   */
-  static createUserPayload(payload: MethodArg.CreateUser): void {
-    if (isEmpty(payload) || !(isString(payload.appUserId) && isBoolean(payload.active))) {
-      throw new Error("Fields 'appUserId' and 'active' are required");
-    }
-  }
-
-  /**
-   *
-   *
-   * @static
-   * @param {MethodArg.UpdateUser} payload
-   * @memberof Validator
-   */
-  static updateUserPayload(payload: MethodArg.UpdateUser): void {
+  static getUsersPayload(oneUpUserId?: OneUpUserId, appUserId?: AppUserId): void {
+    if (oneUpUserId === undefined && appUserId === undefined) return;
     if (
-      isEmpty(payload) ||
+        !isString(appUserId) ||
+        !isString(oneUpUserId) ||
+        isEmpty(appUserId) ||
+        isEmpty(oneUpUserId)
+    ) {
+      throw new Error("Parameters 'appUserId' and 'oneUpUserId' are required");
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {AppUserId} appUserId
+   * @param {UserActive} userActive
+   * @memberof Validator
+   */
+  static createUserPayload(appUserId: AppUserId, userActive: UserActive): void {
+    if (!isString(appUserId) || !isBoolean(userActive)) {
+      throw new Error("Fields 'appUserId' and 'userActive' are required");
+    }
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @param {AppUserId} appUserId
+   * @param {OneUpUserId} oneUpUserId
+   * @param {UserActive} userActive
+   * @memberof Validator
+   */
+  static updateUserPayload(
+    appUserId: AppUserId,
+    oneUpUserId: OneUpUserId,
+    userActive: UserActive,
+  ): void {
+    if (
       !(
-        isString(payload.appUserId) &&
-        isString(payload.oneupUserId) &&
-        isBoolean(payload.active)
+        isString(appUserId) &&
+        isString(oneUpUserId) &&
+        isBoolean(userActive)
       )
     ) {
-      throw new Error("Fields 'appUserId', 'active' and 'oneupUserId' are required");
+      throw new Error("Fields 'appUserId', 'userActive' and 'oneUpUserId' are required");
     }
   }
 
@@ -62,11 +73,13 @@ export default class Validator {
    *
    *
    * @static
-   * @param {MethodArg.GenerateUserAuthCode} payload
+   * @param {AppUserId} appUserId
    * @memberof Validator
    */
-  static generateUserAuthCodePayload(payload: MethodArg.GenerateUserAuthCode): void {
-    if (isEmpty(payload) || !(isString(payload.appUserId))) {
+  static generateUserAuthCodePayload(
+    appUserId: AppUserId,
+  ): void {
+    if (!(isString(appUserId))) {
       throw new Error("Field 'appUserId'is required");
     }
   }
