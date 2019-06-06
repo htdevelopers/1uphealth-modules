@@ -397,4 +397,23 @@ describe('api-sdk', () => {
       });
     });
   });
+
+  describe('Authorization errors', () => {
+    it('throws error if reqest is not authorized', async () => {
+      const api = new ApiSDK({
+        clientId: 'test',
+        clientSecret: 'test1',
+      });
+      let error = 0;
+      try {
+        await api.getUsers({
+          appUserId: '',
+          oneupUserId: '',
+        });
+      } catch (e) {
+        error += 1;
+      }
+      expect(error).toBeGreaterThan(0);
+    });
+  });
 });

@@ -87,21 +87,37 @@ export default class HttpClient {
     options?: HttpClientOptions,
   ): Promise<HttpClientResponse> {
     try {
-      const response = await axios[method](
-        uri,
-        Object.assign({}, this.defaultOptions, options),
-      );
-      return this.buildResponse(response);
+      const response = await axios[method](uri, Object.assign({}, this.defaultOptions, options));
+      this.checkAuthorizationResponse(response);
+      return response.data;
     } catch (error) {
       throw error;
     }
   }
 
-  private buildResponse(response: AxiosResponse): HttpClientResponse {
-    return {
-      data: response.data,
-      status: response.status,
-      statusMessage: response.statusText,
-    };
+  /**
+   *
+   *
+   * @private
+   * @param {AxiosResponse} response
+   * @memberof HttpClient
+   */
+  private checkAuthorizationResponse(response: AxiosResponse): void {
+    const { status, data } = response;
+    const unathorizedStatuses = [300, 301, 302, 401, 403];
+
+    if (
+      unathorizedStatuses.includes(status) ||
+      (typeof data === 'string' && data.includes('login-form'))
+    ) {
+      throw new Error(
+        `Unauthorized. You are not allowed to access this resource. \
+Make sure that access token or client keys were provide.d`,
+      );
+    }
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
   }
 }

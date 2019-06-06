@@ -35,11 +35,7 @@ export namespace MethodArg {
   export interface RevokePermissions extends OneUpUserId, FHIRVersion {}
 }
 
-export interface HttpClientResponse {
-  status: number;
-  statusMessage: string;
-  data: any;
-}
+export type HttpClientResponse = any;
 
 export interface HttpClientOptions extends AxiosRequestConfig {}
 
