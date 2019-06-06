@@ -1,6 +1,6 @@
 {
   "name": "@1uphealth-temp/api",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "description...",
   "main": "dist/index",
   "types": "dist/index.d.ts",
