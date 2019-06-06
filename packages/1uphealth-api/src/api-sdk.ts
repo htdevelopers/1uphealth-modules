@@ -72,7 +72,7 @@ export default class ApiSDK {
    * An array of user objects
    * @memberof ApiSDK
    */
-  public async getUsers(
+  public getUsers(
     oneUpUserId?: OneUpUserId,
     appUserId?: AppUserId,
   ): Promise<HttpClientResponse> {
@@ -99,7 +99,7 @@ export default class ApiSDK {
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
-  public async createUser(
+  public createUser(
     appUserId: AppUserId,
     userActive: UserActive,
   ): Promise<HttpClientResponse> {
@@ -128,7 +128,7 @@ export default class ApiSDK {
    * Will return the new user object
    * @memberof ApiSDK
    */
-  public async updateUser(
+  public updateUser(
     appUserId: AppUserId,
     oneUpUserId: OneUpUserId,
     userActive: UserActive,
@@ -159,7 +159,7 @@ export default class ApiSDK {
    * which can be used to authenticate requests made on behalf of the user.
    * @memberof ApiSDK
    */
-  public async generateUserAuthCode(
+  public generateUserAuthCode(
     appUserId: AppUserId,
   ): Promise<HttpClientResponse> {
     Validator.generateUserAuthCodePayload(appUserId);
@@ -187,7 +187,7 @@ export default class ApiSDK {
    * this is to render this endpoint in an iframe within the developers own app.
    * @memberof ApiSDK
    */
-  public async getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
+  public getHealthSystemPickerIFrame(): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/marketplace`, {
@@ -217,7 +217,7 @@ export default class ApiSDK {
    * for more information on how a FHIR bundle is structured.
    * @memberof ApiSDK
    */
-  public async searchConnectProvider(
+  public searchConnectProvider(
     query: Query,
   ): Promise<HttpClientResponse> {
     Validator.accessToken(this.accessToken);
@@ -241,7 +241,7 @@ export default class ApiSDK {
    * Returns a list of device types that can be used as sources.
    * @memberof ApiSDK
    */
-  public async getDevices(): Promise<HttpClientResponse> {
+  public getDevices(): Promise<HttpClientResponse> {
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/device`, {
       params: {
@@ -262,7 +262,7 @@ export default class ApiSDK {
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
-  public async getSupportedHealthSystems(): Promise<HttpClientResponse> {
+  public getSupportedHealthSystems(): Promise<HttpClientResponse> {
     Validator.clientKeys(this.clientKeys);
     return this.httpClient.get(`${this.API_URL_BASE}/connect/system/clinical`, {
       params: {
@@ -292,7 +292,7 @@ export default class ApiSDK {
    * A FHIR Bundle containing all the resources that match the query,
    * @memberof ApiSDK
    */
-  public async getFHIRResources(
+  public getFHIRResources(
     fhirVersion: FHIRVersion,
     resourceType: FHIR_DSTU2.ResourceTypeStr | FHIR_STU3.ResourceTypeStr,
     queryParams: QueryParams,
@@ -327,7 +327,7 @@ export default class ApiSDK {
    * A FHIR Resource containing all the attributes that were posted.
    * @memberof ApiSDK
    */
-  public async createFHIRResource(
+  public createFHIRResource(
     fhirVersion: FHIRVersion,
     resourceType: FHIR_DSTU2.ResourceTypeStr | FHIR_STU3.ResourceTypeStr,
     resource: FHIR_DSTU2.Resource | FHIR_STU3.Resource,
@@ -357,7 +357,7 @@ export default class ApiSDK {
    * A FHIR Bundle containing all the resources that match the query
    * @memberof ApiSDK
    */
-  public async queryFHIREverything(
+  public queryFHIREverything(
     patientId: PatientId,
     fhirVersion: FHIRVersion,
   ): Promise<HttpClientResponse> {
@@ -386,7 +386,7 @@ export default class ApiSDK {
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
-  public async grantPermissions(
+  public grantPermissions(
     oneUpUserId: OneUpUserId,
     fhirVersion: FHIRVersion,
   ): Promise<HttpClientResponse> {
@@ -412,7 +412,7 @@ export default class ApiSDK {
    * @returns {Promise<HttpClientResponse>}
    * @memberof ApiSDK
    */
-  public async revokePermissions(
+  public revokePermissions(
     oneUpUserId: OneUpUserId,
     fhirVersion: FHIRVersion,
   ): Promise<HttpClientResponse> {
