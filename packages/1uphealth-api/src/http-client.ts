@@ -93,11 +93,16 @@ export default class HttpClient {
    */
   private async executeRequest(
     method: HttpClientMethod,
-    uri: string,
+    url: string,
     options?: HttpClientOptions,
   ): Promise<HttpClientResponse> {
     try {
-      const response = await axios[method](uri, Object.assign({}, this.defaultOptions, options));
+      const response = await axios({
+        method,
+        url,
+        ...this.defaultOptions,
+        ...options,
+      });
       this.checkAuthorizationResponse(response);
       return response.data;
     } catch (error) {
