@@ -15,7 +15,7 @@
     "pretest": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "docs": "tsc --target esw2019 --outDir ./dist/docs && documentation readme dist/es6/src/api-sdk.js -f md --resolve node -s @1uphealth/api --markdown-toc false && rm -rf ./dist/docs"
+    "docs": "tsc --target es2019 --outDir ./dist/docs && documentation readme dist/docs/src/api-sdk.js -f md --resolve node -s @1uphealth/api --markdown-toc false && rm -rf ./dist/docs"
   },
   "keywords": [
     "1uphealth",
@@ -39,5 +39,5 @@
     "lodash.isempty": "^4.4.0",
     "lodash.isstring": "^4.0.1"
   },
-  "gitHead": "6e2f84993563f94379f936c8dd9de491737eb223"
+  "gitHead": "6fafbafd138ac6ef327f9143a47e79ae21814037"
 }
