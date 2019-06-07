@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { DataContext } from './Base';
 
 interface Props {
   onClick: any;
 }
 
 class List extends React.Component<Props> {
+  public static contextType = DataContext;
   constructor(props: Props) {
     super(props);
   }
@@ -35,6 +37,8 @@ class List extends React.Component<Props> {
 
   public render(): JSX.Element {
     const { onClick } = this.props;
+    const { healthSystems } = this.context;
+    console.log('ContextType: ', healthSystems);
 
     const data = [
       {
