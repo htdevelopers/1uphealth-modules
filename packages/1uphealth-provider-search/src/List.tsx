@@ -5,6 +5,12 @@ interface Props {
   onClick: any;
 }
 
+interface Identifier {
+  system: string;
+  use: string;
+  value: string;
+}
+
 class List extends React.Component<Props> {
   public static contextType = DataContext;
   constructor(props: Props) {
@@ -35,58 +41,65 @@ class List extends React.Component<Props> {
     );
   }
 
+  returnProperhealthSystem = (identifierArr: any): { logo: string; name: string } => {
+    const { healthSystems } = this.context;
+    const healthsystemId = identifierArr.find(
+      (i: Identifier) => i.system.includes('1up.health')).value;
+
+    // tslint:disable-next-line:radix
+    const healthSystem = healthSystems.find((hS: any) => hS.id === parseInt(healthsystemId));
+
+    if (healthSystem !== undefined) {
+      return {
+        logo: healthSystem.logo,
+        name: healthSystem.name,
+      };
+    }
+
+    return {
+      logo: '-',
+      name: '-',
+    };
+  }
+
   public render(): JSX.Element {
     const { onClick } = this.props;
-    const { healthSystems } = this.context;
-    console.log('ContextType: ', healthSystems);
+    const { healthSystems, fhirData } = this.context;
+    console.log('ContextType -->: ', this.context);
 
-    const data = [
-      {
-        logo: '-',
-        name: 'Dr. Gorge Office',
-        system: 'XYZ Health System',
-        address: 'Baker Street 221B',
-        city: 'New York',
-        state: 'NY',
-        zipcode: '10011',
-        action: 'Connected',
-      },
-      {
-        logo: '-',
-        name: 'Sam Smith Medicine Health',
-        system: 'ABC Health System',
-        address: 'Baker Street 221B',
-        city: 'New York',
-        state: 'NY',
-        zipcode: '10011',
-        action: 'Connected',
-      },
-    ];
-    return (
-      <div className="list-container">
-        <div className="list-container__wrapper">
-          {data.map((r) => {
-            return (
-              <div className="row" onClick={onClick}>
-                <div className="row__logo">{r.logo}</div>
-                <div className="row__name">
-                  <div className="row__name__icon">{this.returnHomeIcon()}</div>
-                  <div>
-                    {r.name}
-                    <span>{r.system}</span>
+    if (healthSystems.length > 0 && fhirData.length > 0) {
+      return (
+        <div className="list-container">
+          <div className="list-container__wrapper">
+            {fhirData.map((r: any) => {
+              return (
+                <div key={r.resource.id} className="row" onClick={onClick}>
+                  <div className="row__logo">
+                    <img src={this.returnProperhealthSystem(r.resource.identifier).logo}
+                      alt="health system logo"
+                    />
+                    </div>
+                  <div className="row__name">
+                    <div className="row__name__icon">{this.returnHomeIcon()}</div>
+                    <div>
+                      {r.resource.name}
+                      <span>{this.returnProperhealthSystem(r.resource.identifier).name}</span>
+                    </div>
                   </div>
+                  <div className="row__address">{r.resource.address[0].line[0]}</div>
+                  <div className="row__city">{r.resource.address[0].city}</div>
+                  <div className="row__state">{r.resource.address[0].state}</div>
+                  <div className="row__zipcode">{r.resource.address[0].postalCode}</div>
+                  <div className="row__action">Connect</div>
                 </div>
-                <div className="row__address">{r.address}</div>
-                <div className="row__city">{r.city}</div>
-                <div className="row__state">{r.state}</div>
-                <div className="row__zipcode">{r.zipcode}</div>
-                <div className="row__action">{r.action}</div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    return <div>Loading...</div>;
   }
 }
 

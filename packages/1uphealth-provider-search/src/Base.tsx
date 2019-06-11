@@ -70,7 +70,7 @@ class Base extends React.Component<Props, State> {
       const fhirResponse = await axios(config);
 
       this.setState({
-        fhirData: fhirResponse.data,
+        fhirData: fhirResponse.data.entry,
       });
     } catch (error) {
       console.log(error);
@@ -78,9 +78,9 @@ class Base extends React.Component<Props, State> {
   }
 
   render() {
-    const { healthSystems } = this.state;
+    const { healthSystems, fhirData } = this.state;
     return (
-      <DataContext.Provider value={{ healthSystems }}>
+      <DataContext.Provider value={{ healthSystems, fhirData }}>
         <div className="provider-search-container">
           {this.props.children}
         </div>
