@@ -75,7 +75,7 @@ class List extends React.Component<Props> {
 
   public render(): JSX.Element {
     const { onClick } = this.props;
-    const { healthSystems, fhirData, loadMoreData } = this.context;
+    const { healthSystems, fhirData, getFHIRResources } = this.context;
     console.log('ContextType -->: ', this.context);
 
     if (healthSystems.length > 0 && fhirData.length > 0) {
@@ -85,7 +85,7 @@ class List extends React.Component<Props> {
             <InfiniteScroll
               pageStart={1}
               initialLoad={false}
-              loadMore={loadMoreData}
+              loadMore={getFHIRResources}
               hasMore={this.hasMoreRecords()}
               loader={<div className="loader" key={0}>Loading ...</div>}
               useWindow={false}
@@ -95,7 +95,7 @@ class List extends React.Component<Props> {
                   <div key={r.resource.id} className="row" onClick={onClick}>
                     <div className="row__logo">
                       <img src={this.returnProperhealthSystem(r.resource.identifier).logo}
-                        alt="health system logo"
+                        alt="logo"
                       />
                       </div>
                     <div className="row__name">

@@ -22,6 +22,9 @@ class Base extends React.Component<Props, State> {
       'Content-Type': 'application/json',
     },
   };
+  /* tslint:disable */
+  public fhirUrl = `http://localhost:3000/api/fhir-resources?accessToken=${this.props.token}&fhirVersion=dstu2&fhirResource=Organization&_public=true&identifier.system=https://1up.health/dev/concept/doc/1uphealth-system-identifier`;
+  /* tslint:enable */
 
   public constructor(props: Props) {
     super(props);
@@ -66,43 +69,21 @@ class Base extends React.Component<Props, State> {
 
   public getFHIRResources = async (): Promise<any> => {
     const { token } = this.props;
+    const { page, fhirData } = this.state;
+
     const config = {
       ...this.requestConfig,
       /* tslint:disable */
-      url: `http://localhost:3000/api/fhir-resources?accessToken=${token}&fhirVersion=dstu2&fhirResource=Organization&_public=true&identifier.system=https://1up.health/dev/concept/doc/1uphealth-system-identifier`,
+      url: page === 0 ? this.fhirUrl : `${this.fhirUrl}&_skip=${page * 10}`,
       /* tslint:enable */
     };
     try {
       // @ts-ignore
       const fhirResponse = await axios(config);
 
-      console.log('FHIR -->', fhirResponse);
-
       this.setState({
-        fhirData: fhirResponse.data.entry,
+        fhirData: [...fhirData, ...fhirResponse.data.entry],
         totalCount: fhirResponse.data.total,
-        page: 1,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  public loadMoreData = async () => {
-    const { token } = this.props;
-    const { page, fhirData } = this.state;
-    const config = {
-      ...this.requestConfig,
-      /* tslint:disable */
-      url: `http://localhost:3000/api/fhir-resources?accessToken=${token}&fhirVersion=dstu2&fhirResource=Organization&_public=true&identifier.system=https://1up.health/dev/concept/doc/1uphealth-system-identifier&_skip=${page * 10}`,
-      /* tslint:enable */
-    };
-    try {
-      // @ts-ignore
-      const loadMoreFHIRData = await axios(config);
-
-      this.setState({
-        fhirData: [...fhirData, ...loadMoreFHIRData.data.entry],
         page: page + 1,
       });
     } catch (error) {
@@ -117,7 +98,7 @@ class Base extends React.Component<Props, State> {
       totalCount,
       healthSystems,
       fhirData,
-      loadMoreData: this.loadMoreData,
+      getFHIRResources: this.getFHIRResources,
     };
 
     return (
