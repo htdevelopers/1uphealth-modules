@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { DataContext } from './Base';
+import InfiniteScroll from 'react-infinite-scroller';
 
 interface Props {
   onClick: any;
@@ -62,39 +63,58 @@ class List extends React.Component<Props> {
     };
   }
 
+  hasMoreRecords = (): boolean => {
+    const { totalCount,  fhirData } = this.context;
+
+    if (fhirData.length < totalCount) {
+      return true;
+    }
+
+    return false;
+  }
+
   public render(): JSX.Element {
     const { onClick } = this.props;
-    const { healthSystems, fhirData } = this.context;
+    const { healthSystems, fhirData, loadMoreData } = this.context;
     console.log('ContextType -->: ', this.context);
 
     if (healthSystems.length > 0 && fhirData.length > 0) {
       return (
         <div className="list-container">
           <div className="list-container__wrapper">
-            {fhirData.map((r: any) => {
-              return (
-                <div key={r.resource.id} className="row" onClick={onClick}>
-                  <div className="row__logo">
-                    <img src={this.returnProperhealthSystem(r.resource.identifier).logo}
-                      alt="health system logo"
-                    />
+            <InfiniteScroll
+              pageStart={1}
+              initialLoad={false}
+              loadMore={loadMoreData}
+              hasMore={this.hasMoreRecords()}
+              loader={<div className="loader" key={0}>Loading ...</div>}
+              useWindow={false}
+            >
+              {fhirData.map((r: any) => {
+                return (
+                  <div key={r.resource.id} className="row" onClick={onClick}>
+                    <div className="row__logo">
+                      <img src={this.returnProperhealthSystem(r.resource.identifier).logo}
+                        alt="health system logo"
+                      />
+                      </div>
+                    <div className="row__name">
+                      <div className="row__name__icon">{this.returnHomeIcon()}</div>
+                      <div>
+                        {r.resource.name}
+                        <span>{this.returnProperhealthSystem(r.resource.identifier).name}</span>
+                      </div>
                     </div>
-                  <div className="row__name">
-                    <div className="row__name__icon">{this.returnHomeIcon()}</div>
-                    <div>
-                      {r.resource.name}
-                      <span>{this.returnProperhealthSystem(r.resource.identifier).name}</span>
-                    </div>
+                    <div className="row__address">{r.resource.address[0].line[0]}</div>
+                    <div className="row__city">{r.resource.address[0].city}</div>
+                    <div className="row__state">{r.resource.address[0].state}</div>
+                    <div className="row__zipcode">{r.resource.address[0].postalCode}</div>
+                    <div className="row__action">Connect</div>
                   </div>
-                  <div className="row__address">{r.resource.address[0].line[0]}</div>
-                  <div className="row__city">{r.resource.address[0].city}</div>
-                  <div className="row__state">{r.resource.address[0].state}</div>
-                  <div className="row__zipcode">{r.resource.address[0].postalCode}</div>
-                  <div className="row__action">Connect</div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+              </InfiniteScroll>
+            </div>
         </div>
       );
     }
