@@ -4,6 +4,7 @@ import axios from 'axios';
 
 interface Props {
   token: string;
+  getContext: (c : any) => any;
 }
 
 interface State {
@@ -42,10 +43,14 @@ class Base extends React.Component<Props, State> {
   }
 
   public componentDidUpdate = (prevProps: Props): void => {
-    const { token } = this.props;
+    const { token, getContext } = this.props;
     if (token !== prevProps.token) {
       this.getHealthSystems();
       this.getFHIRResources();
+    }
+
+    if (getContext !== undefined && typeof getContext === 'function') {
+      this.returnContext(getContext);
     }
   }
 
@@ -91,6 +96,29 @@ class Base extends React.Component<Props, State> {
     }
   }
 
+  public searchInputOnChange = (e: React.ChangeEvent<HTMLSelectElement>, func: any) => {
+    // API request
+    if (func !== undefined) {
+      return func(e);
+    }
+  }
+
+  public returnContext = (func: any) => {
+    const { healthSystems, fhirData, totalCount } = this.state;
+
+    const contextValue = {
+      totalCount,
+      healthSystems,
+      fhirData,
+      getFHIRResources: this.getFHIRResources,
+      searchInputOnChange: this.searchInputOnChange,
+    };
+
+    if (func !== undefined) {
+      return func(contextValue);
+    }
+  }
+
   render() {
     const { healthSystems, fhirData, totalCount } = this.state;
 
@@ -99,6 +127,7 @@ class Base extends React.Component<Props, State> {
       healthSystems,
       fhirData,
       getFHIRResources: this.getFHIRResources,
+      searchInputOnChange: this.searchInputOnChange,
     };
 
     return (

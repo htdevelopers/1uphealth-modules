@@ -76,7 +76,6 @@ class List extends React.Component<Props> {
   public render(): JSX.Element {
     const { onClick } = this.props;
     const { healthSystems, fhirData, getFHIRResources } = this.context;
-    console.log('ContextType -->: ', this.context);
 
     if (healthSystems.length > 0 && fhirData.length > 0) {
       return (
