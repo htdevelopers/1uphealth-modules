@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DataContext } from './Base';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import { OrganizationIdentifierI } from './interfaces';
+import { OrganizationIdentifierI, FHIROrganizationI } from './interfaces';
 
 interface Props {
   onClick: any;
@@ -38,7 +38,7 @@ class List extends React.Component<Props> {
     );
   }
 
-  returnProperhealthSystem = (identifierArr: any): { logo: string; name: string } => {
+  public returnProperhealthSystem = (identifierArr: any): { logo: string; name: string } => {
     const { healthSystems } = this.context;
     const healthsystemId = identifierArr.find(
       (i: OrganizationIdentifierI) => i.system.includes('1up.health')).value;
@@ -59,7 +59,7 @@ class List extends React.Component<Props> {
     };
   }
 
-  hasMoreRecords = (): boolean => {
+  public hasMoreRecords = (): boolean => {
     const { totalCount,  fhirData } = this.context;
 
     if (fhirData.length < totalCount) {
@@ -69,9 +69,18 @@ class List extends React.Component<Props> {
     return false;
   }
 
+  public checkValue = (value: string | number) => {
+    if (value === undefined || value === '') {
+      return '-';
+    }
+
+    return value;
+  }
+
   public render(): JSX.Element {
+    const checkValue  = this.checkValue;
     const { onClick } = this.props;
-    const { healthSystems, fhirData, getFHIRResources } = this.context;
+    const { healthSystems, filteredHealthSystems, fhirData, getFHIRResources } = this.context;
 
     if (healthSystems.length > 0 && fhirData.length > 0) {
       return (
@@ -85,7 +94,29 @@ class List extends React.Component<Props> {
               loader={<div className="loader" key={0}>Loading ...</div>}
               useWindow={false}
             >
-              {fhirData.map((r: any) => {
+              {filteredHealthSystems.map((r: any) => {
+                return (
+                  <div key={r.id} className="row" onClick={onClick}>
+                    <div className="row__logo">
+                      <img src={r.logo}
+                        alt="logo"
+                      />
+                      </div>
+                    <div className="row__name">
+                      <div className="row__name__icon">{this.returnHomeIcon()}</div>
+                      <div>
+                        {checkValue(r.name)}
+                      </div>
+                    </div>
+                    <div className="row__address">{checkValue(r.address)}</div>
+                    <div className="row__city">{checkValue(r.city)}</div>
+                    <div className="row__state">{checkValue(r.state)}</div>
+                    <div className="row__zipcode">{checkValue(r.zipcode)}</div>
+                    <div className="row__action">Connect</div>
+                  </div>
+                );
+              })}
+              {fhirData.map((r: FHIROrganizationI) => {
                 return (
                   <div key={r.resource.id} className="row" onClick={onClick}>
                     <div className="row__logo">

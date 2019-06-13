@@ -57,6 +57,7 @@ interface FHIROrganizationAddressI {
   line: string[];
   state: string;
   use: string;
+  postalCode: string;
 }
 
 interface FHIROrganizationExtensionI {

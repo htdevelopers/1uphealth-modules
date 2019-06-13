@@ -119,9 +119,14 @@ class Base extends React.Component<Props, State> {
 
   public filterHealthSystems = (inputValue: string) => {
     const { healthSystems } = this.state;
-    const filteredHealthSystems: any =
-      healthSystems.filter(hS => hS.name.toLowerCase().includes(inputValue.toLowerCase()))
-      .map(hS => this.prepareSingleDataObject(hS));
+    let filteredHealthSystems: any;
+    if (inputValue.length > 0) {
+      filteredHealthSystems =
+        healthSystems.filter(hS => hS.name.toLowerCase().includes(inputValue.toLowerCase()))
+        .map(hS => this.prepareSingleDataObject(hS));
+    } else {
+      filteredHealthSystems = [];
+    }
     this.setState({
       filteredHealthSystems,
     });
