@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DataContext } from './Base';
 
 interface Props {
   inputLabel: string;
@@ -6,6 +7,7 @@ interface Props {
 }
 
 class Input extends React.Component<Props> {
+  public static contextType = DataContext;
   constructor(props: Props) {
     super(props);
   }
@@ -43,6 +45,7 @@ class Input extends React.Component<Props> {
 
   render(): JSX.Element {
     const { inputProps, inputLabel } = this.props;
+    const { searchInputOnChange } = this.context;
 
     return (
       <div className="input-container">
@@ -52,7 +55,8 @@ class Input extends React.Component<Props> {
         >
           <div className="input-container__wrapper__icon">{this.renderInputIcon()}</div>
           <input type="text" placeholder="Search"
-          {...inputProps}
+            {...inputProps}
+            onChange={e => searchInputOnChange(e, inputProps.onChange)}
           />
         </div>
       </div>

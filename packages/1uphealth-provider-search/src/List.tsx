@@ -1,10 +1,15 @@
 import * as React from 'react';
+import { DataContext } from './Base';
+import InfiniteScroll from 'react-infinite-scroller';
+
+import { OrganizationIdentifierI, FHIROrganizationI } from './interfaces';
 
 interface Props {
   onClick: any;
 }
 
 class List extends React.Component<Props> {
+  public static contextType = DataContext;
   constructor(props: Props) {
     super(props);
   }
@@ -33,56 +38,114 @@ class List extends React.Component<Props> {
     );
   }
 
-  public render(): JSX.Element {
-    const { onClick } = this.props;
+  public returnProperhealthSystem = (identifierArr: any): { logo: string; name: string } => {
+    const { healthSystems } = this.context;
+    const healthsystemId = identifierArr.find(
+      (i: OrganizationIdentifierI) => i.system.includes('1up.health')).value;
 
-    const data = [
-      {
-        logo: '-',
-        name: 'Dr. Gorge Office',
-        system: 'XYZ Health System',
-        address: 'Baker Street 221B',
-        city: 'New York',
-        state: 'NY',
-        zipcode: '10011',
-        action: 'Connected',
-      },
-      {
-        logo: '-',
-        name: 'Sam Smith Medicine Health',
-        system: 'ABC Health System',
-        address: 'Baker Street 221B',
-        city: 'New York',
-        state: 'NY',
-        zipcode: '10011',
-        action: 'Connected',
-      },
-    ];
-    return (
-      <div className="list-container">
-        <div className="list-container__wrapper">
-          {data.map((r) => {
-            return (
-              <div className="row" onClick={onClick}>
-                <div className="row__logo">{r.logo}</div>
-                <div className="row__name">
-                  <div className="row__name__icon">{this.returnHomeIcon()}</div>
-                  <div>
-                    {r.name}
-                    <span>{r.system}</span>
+    // tslint:disable-next-line:radix
+    const healthSystem = healthSystems.find((hS: any) => hS.id === parseInt(healthsystemId));
+
+    if (healthSystem !== undefined) {
+      return {
+        logo: healthSystem.logo,
+        name: healthSystem.name,
+      };
+    }
+
+    return {
+      logo: '-',
+      name: '-',
+    };
+  }
+
+  public hasMoreRecords = (): boolean => {
+    const { totalCount,  fhirData } = this.context;
+
+    if (fhirData.length < totalCount) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public checkValue = (value: string | number) => {
+    if (value === undefined || value === '') {
+      return '-';
+    }
+
+    return value;
+  }
+
+  public render(): JSX.Element {
+    const checkValue  = this.checkValue;
+    const { onClick } = this.props;
+    const { healthSystems, filteredHealthSystems, fhirData, getFHIRResources } = this.context;
+
+    if (healthSystems.length > 0 && fhirData.length > 0) {
+      return (
+        <div className="list-container">
+          <div className="list-container__wrapper">
+            <InfiniteScroll
+              pageStart={1}
+              initialLoad={false}
+              loadMore={getFHIRResources}
+              hasMore={this.hasMoreRecords()}
+              loader={<div className="loader" key={0}>Loading ...</div>}
+              useWindow={false}
+            >
+              {filteredHealthSystems.map((r: any) => {
+                return (
+                  <div key={r.id} className="row" onClick={onClick}>
+                    <div className="row__logo">
+                      <img src={r.logo}
+                        alt="logo"
+                      />
+                      </div>
+                    <div className="row__name">
+                      <div className="row__name__icon">{this.returnHomeIcon()}</div>
+                      <div>
+                        {checkValue(r.name)}
+                      </div>
+                    </div>
+                    <div className="row__address">{checkValue(r.address)}</div>
+                    <div className="row__city">{checkValue(r.city)}</div>
+                    <div className="row__state">{checkValue(r.state)}</div>
+                    <div className="row__zipcode">{checkValue(r.zipcode)}</div>
+                    <div className="row__action">Connect</div>
                   </div>
-                </div>
-                <div className="row__address">{r.address}</div>
-                <div className="row__city">{r.city}</div>
-                <div className="row__state">{r.state}</div>
-                <div className="row__zipcode">{r.zipcode}</div>
-                <div className="row__action">{r.action}</div>
-              </div>
-            );
-          })}
+                );
+              })}
+              {fhirData.map((r: FHIROrganizationI) => {
+                return (
+                  <div key={r.resource.id} className="row" onClick={onClick}>
+                    <div className="row__logo">
+                      <img src={this.returnProperhealthSystem(r.resource.identifier).logo}
+                        alt="logo"
+                      />
+                      </div>
+                    <div className="row__name">
+                      <div className="row__name__icon">{this.returnHomeIcon()}</div>
+                      <div>
+                        {r.resource.name}
+                        <span>{this.returnProperhealthSystem(r.resource.identifier).name}</span>
+                      </div>
+                    </div>
+                    <div className="row__address">{r.resource.address[0].line[0]}</div>
+                    <div className="row__city">{r.resource.address[0].city}</div>
+                    <div className="row__state">{r.resource.address[0].state}</div>
+                    <div className="row__zipcode">{r.resource.address[0].postalCode}</div>
+                    <div className="row__action">Connect</div>
+                  </div>
+                );
+              })}
+              </InfiniteScroll>
+            </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    return <div>Loading...</div>;
   }
 }
 
