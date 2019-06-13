@@ -2,14 +2,17 @@ import * as React from 'react';
 import axios from 'axios';
 // import Api from '@1uphealth-temp/api';
 
+import { HealthSystemI, FilteredDataObjectI, FHIROrganizationI } from './interfaces';
+
 interface Props {
   token: string;
   getContext: (c : any) => any;
 }
 
 interface State {
-  healthSystems: any[];
-  fhirData: any[];
+  healthSystems: HealthSystemI[];
+  fhirData: FHIROrganizationI[];
+  filteredHealthSystems: FilteredDataObjectI[];
   totalCount: number;
   page: number;
 }
@@ -32,6 +35,7 @@ class Base extends React.Component<Props, State> {
     this.state = {
       healthSystems: [],
       fhirData: [],
+      filteredHealthSystems: [],
       totalCount: 0,
       page: 0,
     };
@@ -54,6 +58,7 @@ class Base extends React.Component<Props, State> {
     }
   }
 
+  // API reqests
   public getHealthSystems = async (): Promise<any> => {
     const { token } = this.props;
     const config = {
@@ -96,23 +101,58 @@ class Base extends React.Component<Props, State> {
     }
   }
 
+  public prepareSingleDataObject = (row: HealthSystemI) => {
+    // Add implementation for organizations
+
+    if (row.logo !== undefined) {
+      return {
+        id: row.id,
+        logo: row.logo,
+        name: row.name,
+        address: row.locations[0].address.line[0],
+        city: row.locations[0].address.city,
+        state: row.locations[0].address.state,
+        zipcode: row.locations[0].address.postalCode,
+      };
+    }
+  }
+
+  public filterHealthSystems = (inputValue: string) => {
+    const { healthSystems } = this.state;
+    const filteredHealthSystems: any =
+      healthSystems.filter(hS => hS.name.toLowerCase().includes(inputValue.toLowerCase()))
+      .map(hS => this.prepareSingleDataObject(hS));
+    this.setState({
+      filteredHealthSystems,
+    });
+  }
+
   public searchInputOnChange = (e: React.ChangeEvent<HTMLSelectElement>, func: any) => {
+    const inputValue = e.target.value;
+    this.filterHealthSystems(inputValue);
+
     // API request
+    // --------------------------------
     if (func !== undefined) {
       return func(e);
     }
   }
 
-  public returnContext = (func: any) => {
-    const { healthSystems, fhirData, totalCount } = this.state;
+  public prepareContextObject = () => {
+    const { healthSystems, fhirData, filteredHealthSystems, totalCount } = this.state;
 
-    const contextValue = {
+    return {
       totalCount,
       healthSystems,
       fhirData,
+      filteredHealthSystems,
       getFHIRResources: this.getFHIRResources,
       searchInputOnChange: this.searchInputOnChange,
     };
+  }
+
+  public returnContext = (func: any) => {
+    const contextValue = this.prepareContextObject();
 
     if (func !== undefined) {
       return func(contextValue);
@@ -120,16 +160,7 @@ class Base extends React.Component<Props, State> {
   }
 
   render() {
-    const { healthSystems, fhirData, totalCount } = this.state;
-
-    const contextValue = {
-      totalCount,
-      healthSystems,
-      fhirData,
-      getFHIRResources: this.getFHIRResources,
-      searchInputOnChange: this.searchInputOnChange,
-    };
-
+    const contextValue = this.prepareContextObject();
     return (
       <DataContext.Provider value={contextValue}>
         <div className="provider-search-container">

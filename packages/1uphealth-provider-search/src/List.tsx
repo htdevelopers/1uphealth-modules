@@ -2,14 +2,10 @@ import * as React from 'react';
 import { DataContext } from './Base';
 import InfiniteScroll from 'react-infinite-scroller';
 
+import { OrganizationIdentifierI } from './interfaces';
+
 interface Props {
   onClick: any;
-}
-
-interface Identifier {
-  system: string;
-  use: string;
-  value: string;
 }
 
 class List extends React.Component<Props> {
@@ -45,7 +41,7 @@ class List extends React.Component<Props> {
   returnProperhealthSystem = (identifierArr: any): { logo: string; name: string } => {
     const { healthSystems } = this.context;
     const healthsystemId = identifierArr.find(
-      (i: Identifier) => i.system.includes('1up.health')).value;
+      (i: OrganizationIdentifierI) => i.system.includes('1up.health')).value;
 
     // tslint:disable-next-line:radix
     const healthSystem = healthSystems.find((hS: any) => hS.id === parseInt(healthsystemId));
